@@ -2370,6 +2370,9 @@ img {
 </header>
 <nav class="tsd-navigation secondary">
 	<ul>
+		<li class=" tsd-kind-enum">
+			<a href="enums/lang.html" class="tsd-kind-icon">Lang</a>
+		</li>
 		<li class=" tsd-kind-class">
 			<a href="classes/reactformvalidator.html" class="tsd-kind-icon">React<wbr>Form<wbr>Validator</a>
 		</li>
@@ -2403,36 +2406,142 @@ img {
 	<div class="content-wrap">
 		<div class="tsd-panel tsd-typography">
 			<a href="#react-input-form-validation" id="react-input-form-validation" style="color: inherit; text-decoration: none;">
-				<h3>React Input Form Validation</h3>
+				<h1>React Input Form Validation</h1>
 			</a>
-			<p>A customized validatorjs library to validate the react forms. This library is extended version of <a href="https://www.npmjs.com/package/validatorjs">validatorjs</a>.</p>
+			<p><a href="https://travis-ci.org/gokulakannant/react-form-input-validation"><img src="https://api.travis-ci.org/gokulakannant/react-form-input-validation.png?branch=master" alt="Build Status"></a>
+			<a href="https://github.com/gokulakannant/react-form-input-validation/blob/master/LICENSE.md"><img src="https://img.shields.io/github/license/gokulakannant/react-form-input-validation.svg" alt="GitHub license"></a></p>
+			<p>A customized <a href="https://www.npmjs.com/package/validatorjs">validatorjs</a> library to validate the react forms.</p>
 			<ul>
 				<li><a href="https://www.npmjs.com/package/validatorjs#available-rules">Supported Rules</a> (It is supports all validatorjs rules)</li>
-				<li><a href="https://gokulakannant.github.io/react-form-input-validation/">Documentation</a></li>
-				<li><a href="https://gokulakannant.github.io/react-form-input-validation/demo/">Demo</a></li>
+				<li><a href="https://gokulakannant.github.io/react-form-input-validation/index.html">Documentation</a></li>
+				<li><a href="https://codesandbox.io/s/react-form-input-validation-demp-hyuju?fontsize=14&amp;hidenavigation=1&amp;theme=dark">Demo</a> (in CodeSandbox)</li>
+			</ul>
+			<a href="#why-use-react-form-input-validation" id="why-use-react-form-input-validation" style="color: inherit; text-decoration: none;">
+				<h2>Why use react-form-input-validation?</h2>
+			</a>
+			<ul>
+				<li>JQuery Free.</li>
+				<li>Auto Controlled State.</li>
+				<li>Compatible with libraries like <a href="https://material-ui.com/">Material UI</a>, and etc.</li>
+				<li>Readable and declarative validation rules which is inspired by laravel framework.</li>
+				<li>Error messages with multilingual support.</li>
 			</ul>
 			<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
-				<h4>Usage</h4>
+				<h2>Usage</h2>
 			</a>
-			<p><a href="">Click here</a> to see the usage and its example</p>
+			<p>A example form has given below. View all available apis in <a href="https://gokulakannant.github.io/react-form-input-validation/classes/reactformvalidator.html">documentation</a>.</p>
+			<pre><code class="language-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">"react"</span>;
+<span class="hljs-keyword">import</span> ReactFormValidation <span class="hljs-keyword">from</span> <span class="hljs-string">"react-form-input-validation"</span>;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ValidationForm</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
+  <span class="hljs-keyword">constructor</span>(props) {
+    <span class="hljs-keyword">super</span>(props);
+    <span class="hljs-keyword">this</span>.state = {
+      <span class="hljs-attr">fields</span>: {
+        <span class="hljs-attr">name</span>: <span class="hljs-string">""</span>,
+        <span class="hljs-attr">email</span>: <span class="hljs-string">""</span>,
+        <span class="hljs-attr">phone_number</span>: <span class="hljs-string">""</span>
+      },
+      <span class="hljs-attr">inputErrors</span>: {}
+    };
+    <span class="hljs-keyword">this</span>.form = <span class="hljs-keyword">new</span> ReactFormValidation(
+      <span class="hljs-keyword">this</span>,
+      {
+        <span class="hljs-attr">name</span>: <span class="hljs-string">"required"</span>,
+        <span class="hljs-attr">email</span>: <span class="hljs-string">"required|email"</span>,
+        <span class="hljs-attr">phone_number</span>: <span class="hljs-string">"required|numeric|digits_between:10,12"</span>,
+      },
+      (fields) =&gt; {
+        alert(<span class="hljs-built_in">JSON</span>.stringify(fields));
+      }
+    );
+  }
+
+  render() {
+    <span class="hljs-keyword">return</span> (&lt;React.Fragment&gt;
+        &lt;form onSubmit={this.form.handleSubmit}&gt;
+            &lt;p&gt;
+              &lt;label&gt;
+                Name
+                &lt;input
+                  type="text"
+                  name="name"
+                  onBlur={this.form.handleBlurEvent}
+                  onChange={this.form.handleFieldsChange}
+                  value={this.state.fields.name}
+                /&gt;
+              &lt;/label&gt;
+              &lt;label className="error"&gt;
+                {this.state.inputErrors.name ? this.state.inputErrors.name.message : ""}
+              &lt;/label&gt;
+            &lt;/p&gt;
+
+            &lt;p&gt;
+              &lt;label&gt;
+                Email
+                &lt;input
+                  type="email"
+                  name="email"
+                  onBlur={this.form.handleBlurEvent}
+                  onChange={this.form.handleFieldsChange}
+                  value={this.state.fields.email}
+                /&gt;
+              &lt;/label&gt;
+              &lt;label className="error"&gt;
+                {this.state.inputErrors.email ? this.state.inputErrors.email.message : ""}
+              &lt;/label&gt;
+            &lt;/p&gt;
+
+            &lt;p&gt;
+              &lt;label&gt;
+                Phone
+                &lt;input
+                  type="tel"
+                  name="phone_number"
+                  onBlur={this.form.handleBlurEvent}
+                  onChange={this.form.handleFieldsChange}
+                  value={this.state.fields.phone_number}
+                /&gt;
+              &lt;/label&gt;
+              &lt;label className="error"&gt;
+                {this.state.inputErrors.phone_number ? this.state.inputErrors.phone_number.message : ""}
+              &lt;/label&gt;
+            &lt;/p&gt;
+            &lt;p&gt;
+              &lt;button type="submit"&gt;Submit&lt;/button&gt;
+            &lt;/p&gt;
+        &lt;/form&gt;
+    &lt;/React.Fragment&gt;)
+  }
+}</code></pre>
 			<a href="#custom-attribute-name" id="custom-attribute-name" style="color: inherit; text-decoration: none;">
-				<h4>Custom attribute name</h4>
+				<h2>Custom attribute name</h2>
 			</a>
-			<p>Refer the below example to override the attribute name</p>
+			<p>Refer the below example to override the attribute name,</p>
 			<pre><code class="language-html">    <span class="hljs-tag">&lt;<span class="hljs-name">input</span>
         <span class="hljs-attr">type</span>=<span class="hljs-string">"text"</span>
-        <span class="hljs-attr">name</span>=<span class="hljs-string">"customer_name"</span>
+        <span class="hljs-attr">name</span>=<span class="hljs-string">"name"</span>
         <span class="hljs-attr">onBlur</span>=<span class="hljs-string">{this.form.handleBlurEvent}</span>
         <span class="hljs-attr">onChange</span>=<span class="hljs-string">{this.form.handleFieldsChange}</span>
-        <span class="hljs-attr">value</span>=<span class="hljs-string">{this.state.fields.customer_name}</span>
-        <span class="hljs-attr">data-attribute-name</span>=<span class="hljs-string">"CUSTOMER NAME"</span>
+        <span class="hljs-attr">value</span>=<span class="hljs-string">{this.state.fields.name}</span>
+        <span class="hljs-attr">data-attribute-name</span>=<span class="hljs-string">"USER NAME"</span>
     /&gt;</span></code></pre>
-			<p>The output will be like, &quot;The CUSTOMER NAME field is required.&quot;</p>
+			<p>The output will be like, &quot;The USER NAME field is required.&quot;.</p>
+			<a href="#license" id="license" style="color: inherit; text-decoration: none;">
+				<h2>License</h2>
+			</a>
+			<p>This project is licensed under the GPLv3 License - see the <a href="LICENSE.md">LICENSE.md</a> file for details.</p>
 		</div>
 		<section class="tsd-panel-group tsd-index-group">
 			<h2>Index</h2>
 			<section class="tsd-panel tsd-index-panel">
 				<div class="tsd-index-content">
+					<section class="tsd-index-section ">
+						<h3>Enumerations</h3>
+						<ul class="tsd-index-list">
+							<li class="tsd-kind-enum"><a href="enums/lang.html" class="tsd-kind-icon">Lang</a></li>
+						</ul>
+					</section>
 					<section class="tsd-index-section ">
 						<h3>Classes</h3>
 						<ul class="tsd-index-list">
@@ -2468,7 +2577,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">Validator<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;require(&quot;validatorjs&quot;)</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/gokulakannant/react-form-input-validation/blob/0a11d0c/src/index.ts#L1">index.ts:1</a></li>
+						<li>Defined in <a href="https://github.com/gokulakannant/react-form-input-validation/blob/cbd7464/src/index.ts#L1">index.ts:1</a></li>
 					</ul>
 				</aside>
 			</section>
