@@ -6,3 +6,8 @@ webpack.config.js
 
 !*/**/*.d.ts
 example/
+tsconfig.json
+typedocconfig.ts
+webpack.config.js
+tslint.json
+dist/typedocconfig.d.ts
