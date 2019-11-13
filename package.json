@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A validator package to validate the react forms",
   "main": "./dist/bundle.js",
-  "license": "MIT",
+  "license": "GPLv3",
   "author": "gokulakannant <gokulakannanthangaraji@gmail.com>",
   "repository": {
     "type": "git",
