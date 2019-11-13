@@ -25,9 +25,9 @@
   ],
   "scripts": {
     "ts-lint": "tslint -c tslint.json -p tsconfig.json",
-    "prebuild": "yarn ts-lint",
+    "prebuild": "npm run ts-lint",
     "build": "webpack",
-    "postbuild": "yarn generate-docs",
+    "postbuild": "npm run generate-docs",
     "generate-docs": "typedoc --options ./typedocconfig.ts"
   },
   "devDependencies": {
