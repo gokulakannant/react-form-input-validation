@@ -5,9 +5,17 @@ A customized validatorjs library to validate the react forms. This library is ex
 * [Supported Rules](https://www.npmjs.com/package/validatorjs#available-rules) (It is supports all validatorjs rules)
 * [Documentation](https://gokulakannant.github.io/react-form-input-validation/index.html)
 
+## Why use react-form-input-validation?
+
+* JQuery Free
+* Auto Controlled State
+* Compatible with libraries like [Material UI](https://material-ui.com/), and etc.
+* Readable and declarative validation rules which is inspired by laravel framework.
+* Error messages with multilingual support.
+
 ## Usage
 
-A example form has given below for basic usages. View all available apis in documentation
+A example form has given below. View all available apis in [documentation](https://gokulakannant.github.io/react-form-input-validation/classes/reactformvalidator.html)
 
 ```js
 import React from "react";
@@ -95,9 +103,6 @@ class ValidationForm extends React.Component {
   }
 }
 ```
-
-> **Note:**
-> This package is fully compatible with libraries like [Material UI](https://material-ui.com/), etc.
 
 ## Custom attribute name
 
