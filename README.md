@@ -3,12 +3,12 @@
 A customized validatorjs library to validate the react forms. This library is extended version of [validatorjs](https://www.npmjs.com/package/validatorjs).
 
 * [Supported Rules](https://www.npmjs.com/package/validatorjs#available-rules) (It is supports all validatorjs rules)
-* [Documentation](https://gokulakannant.github.io/react-form-input-validation/)
-* [Demo](https://gokulakannant.github.io/react-form-input-validation/demo/)
+* [Documentation](https://gokulakannant.github.io/react-form-input-validation/index.html)
+* [Demo](https://gokulakannant.github.io/react-form-input-validation/demo/index.html)
 
 #### Usage
 
-[Click here](https://gokulakannant.github.io/react-form-input-validation/demo/classes/reactformvalidator.html) to see the usage and its example
+[Click here](https://gokulakannant.github.io/react-form-input-validation/classes/reactformvalidator.html) to see the usage and its example
 
 #### Custom attribute name
 
