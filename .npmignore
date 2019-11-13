@@ -1,0 +1,7 @@
+src/
+webpack.config.js
+*/**/*.ts
+*/**/tsconfig.json
+*.tgz
+
+!*/**/*.d.ts
