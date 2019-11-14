@@ -11,3 +11,6 @@ typedocconfig.ts
 webpack.config.js
 tslint.json
 dist/typedocconfig.d.ts
+Documentation/
+node_modules/
+.travis.yml

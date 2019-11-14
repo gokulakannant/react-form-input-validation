@@ -1,21 +1,25 @@
 # React Input Form Validation
 
-A customized validatorjs library to validate the react forms. This library is extended version of [validatorjs](https://www.npmjs.com/package/validatorjs).
+[![Build Status](https://api.travis-ci.org/gokulakannant/react-form-input-validation.png?branch=master)](https://travis-ci.org/gokulakannant/react-form-input-validation)
+[![GitHub license](https://img.shields.io/github/license/gokulakannant/react-form-input-validation.svg)](https://github.com/gokulakannant/react-form-input-validation/blob/master/LICENSE.md)
+
+A customized [validatorjs](https://www.npmjs.com/package/validatorjs) library to validate the react forms.
 
 * [Supported Rules](https://www.npmjs.com/package/validatorjs#available-rules) (It is supports all validatorjs rules)
 * [Documentation](https://gokulakannant.github.io/react-form-input-validation/index.html)
+* [Demo](https://codesandbox.io/s/react-form-input-validation-demp-hyuju?fontsize=14&hidenavigation=1&theme=dark) (in CodeSandbox)
 
 ## Why use react-form-input-validation?
 
-* JQuery Free
-* Auto Controlled State
+* JQuery Free.
+* Auto Controlled State.
 * Compatible with libraries like [Material UI](https://material-ui.com/), and etc.
 * Readable and declarative validation rules which is inspired by laravel framework.
 * Error messages with multilingual support.
 
 ## Usage
 
-A example form has given below. View all available apis in [documentation](https://gokulakannant.github.io/react-form-input-validation/classes/reactformvalidator.html)
+A example form has given below. View all available apis in [documentation](https://gokulakannant.github.io/react-form-input-validation/classes/reactformvalidator.html).
 
 ```js
 import React from "react";
@@ -106,7 +110,7 @@ class ValidationForm extends React.Component {
 
 ## Custom attribute name
 
-Refer the below example to override the attribute name
+Refer the below example to override the attribute name,
 
 ```html
     <input
@@ -119,8 +123,8 @@ Refer the below example to override the attribute name
     />
 ```
 
-The output will be like, "The USER NAME field is required."
+The output will be like, "The USER NAME field is required.".
 
 ## License
 
-This project is licensed under the GPLv3 License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the GPLv3 License - see the [LICENSE.md](LICENSE.md) file for details.
