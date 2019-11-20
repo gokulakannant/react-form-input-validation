@@ -1,8 +1,13 @@
 import { Component } from "react";
-
-export interface IDynamicKeyValues extends Object {
+/**
+ * A dictionary object, that consists dynamic key value pairs.
+ */
+export interface IDynamicKeyValues {
     [key: string]: any;
 }
+/**
+ * The following states are controlled by {@link ReactFormInputValidation}.
+ */
 interface IAppState {
     /**
      * Denotes input errors in the current form component.
@@ -18,65 +23,207 @@ interface IAppState {
      */
     isValidatorUpdate?: boolean;
 }
+/**
+ * There are no props will send to react component by {@link ReactFormInputValidation}
+ */
 interface IAppProps { }
+/**
+ * A supported react component should be looks like {@link IReactComponent}
+ */
 export interface IReactComponent extends Component<IAppProps, IAppState> { }
 /**
- * The available locales are mensioned in {@link Lang}.
+ * The available locales are mentioned in {@link Lang}.
  */
 export enum Lang {
+    /**
+     * Denotes `Arabic`.
+     */
     ar = "ar",
+    /**
+     * Denotes `Azeri`.
+     */
     az = "az",
+    /**
+     * Denotes `Belarusian`.
+     */
     be = "be",
+    /**
+     * Denotes `Bulgarian`.
+     */
     bg = "bg",
+    /**
+     * Denotes `Bosnian`.
+     */
     bs = "bs",
+    /**
+     * Denotes `Catalan`.
+     */
     ca = "ca",
+    /**
+     * Denotes `Czech`.
+     */
     cs = "cs",
+    /**
+     * Denotes `Welsh`.
+     */
     cy = "cy",
+    /**
+     * Denotes `Danish`.
+     */
     da = "da",
+    /**
+     * Denotes `German`.
+     */
     de = "de",
+    /**
+     * Denotes `Greek`.
+     */
     el = "el",
+    /**
+     * Denotes `English`.
+     */
     en = "en",
+    /**
+     * Denotes `Spanish`.
+     */
     es = "es",
+    /**
+     * Denotes `Estonian`.
+     */
     et = "et",
+    /**
+     * Denotes `Basque`.
+     */
     eu = "eu",
+    /**
+     * Denotes `Farsi`.
+     */
     fa = "fa",
+    /**
+     * Denotes `Finnish`.
+     */
     fi = "fi",
+    /**
+     * Denotes `French`.
+     */
     fr = "fr",
+    /**
+     * Denotes `Croatian`.
+     */
     hr = "hr",
+    /**
+     * Denotes `Hungarian`.
+     */
     hu = "hu",
+    /**
+     * Denotes `Indonesian`.
+     */
     id = "id",
+    /**
+     * Denotes `Italian - Switzerland`.
+     */
     it = "it",
+    /**
+     * Denotes `Japanese`.
+     */
     ja = "ja",
+    /**
+     * Denotes `Georgian`.
+     */
     ka = "ka",
+    /**
+     * Denotes `Korean`.
+     */
     ko = "ko",
+    /**
+     * Denotes `Italian - Italy`.
+     */
     It = "It",
     Iv = "Iv",
+    /**
+     * Denotes `FYRO Macedonia`.
+     */
     mk = "mk",
+    /**
+     * Denotes `Mongolian`.
+     */
     mn = "mn",
+    /**
+     * Denotes `Malay`.
+     */
     ms = "ms",
+    /**
+     * Denotes `Norwegian - Bokml`.
+     */
     nb_NO = "nb_NO",
+    /**
+     * Denotes `Dutch`.
+     */
     nl = "nl",
+    /**
+     * Denotes `Polish`.
+     */
     pl = "pl",
+    /**
+     * Denotes `Portuguese - Portugal`.
+     */
     pt = "pt",
+    /**
+     * Denotes `Portuguese - Brazil`.
+     */
     pt_BR = "pt_BR",
+    /**
+     * Denotes `Romanian`.
+     */
     ro = "ro",
+    /**
+     * Denotes `Russian`.
+     */
     ru = "ru",
     se = "se",
+    /**
+     * Denotes `Slovenian`.
+     */
     sl = "sl",
+    /**
+     * Denotes `Albanian`.
+     */
     sq = "sq",
+    /**
+     * Denotes `Serbian`.
+     */
     sr = "sr",
+    /**
+     * Denotes `Swedish`.
+     */
     sv = "sv",
+    /**
+     * Denotes `Turkish`.
+     */
     tr = "tr",
     ua = "ua",
+    /**
+     * Denotes `Ukrainian`.
+     */
     uk = "uk",
+    /**
+     * Denotes `Vietnamese`.
+     */
     vi = "vi",
+    /**
+     * Denotes `Chinese`.
+     */
     zh = "zh",
+    /**
+     * Denotes `Chinese - Taiwan`.
+     */
     zh_TW = "zh_TW",
 }
 /**
- * A dictionary object to have options
+ * A dictionary object to have options.
  * @example
  * ```js
+ *
  * let options = {
  *      locale: "en"
  * }
@@ -87,7 +234,6 @@ export interface IOptions {
      * The supported languages are {@link Lang}
      */
     locale: Lang;
-    verbose: boolean;
 }
 /**
  * A dictionary object.
@@ -119,11 +265,12 @@ export interface IValidatorErrors {
 
 /**
  * Event callback function for onreactformsubmit.
+ * @param fields A valid form fields data.
  */
 export type ReactFormSubmitEventHandler = (fields: any) => void;
 
-export type EventListener = (data?: any) => void;
-export type ErrorEventListener = (error: Error) => void;
+type EventListener = (data?: any) => void;
+type ErrorEventListener = (error: Error) => void;
 
 abstract class EventTarget {
     addEventListener(
@@ -144,12 +291,14 @@ let _: any;
 
 export abstract class ReactFormInputValidation extends EventTarget {
     /**
-     * Event registered to notify the onreactformsubmit in {@link ReactFormInputValidation}.
+     * Event registered to notify the form submission in {@link ReactFormInputValidation}.
+     * After successfull validation it will emit the valid data.
+     *
      * @returns A callback function {@link ReactFormSubmitEventHandler}.
      * @example
      * ```js
      *
-     *  // Refer "ReactFormInputValidation Interface" for react input form validator object creation
+     *  // Refer "ReactFormInputValidation Interface" for react form input validator object creation
      *
      * this.form.addEventListener("onreactformsubmit", (fields) => {
      *      // Make your ajax calls here.
@@ -162,13 +311,10 @@ export abstract class ReactFormInputValidation extends EventTarget {
      */
     public onreactformsubmit: ReactFormSubmitEventHandler;
     /**
-     * Construct the React Input Form Validator instance.
-     * Find the available [rules](https://www.npmjs.com/package/validatorjs#available-rules) here.
+     * Construct the React Form Input Validator instance.
      *
-     * @param component {@link ReactComponent}
-     * @param rules object
-     * @param callback Function
-     * @param options {@link Options}
+     * @param component A required parameter to pass the current context of the {@link IReactComponent}.
+     * @param options A optional parameter to set initial validator locale.
      * @example
      * ```js
      *
@@ -176,7 +322,7 @@ export abstract class ReactFormInputValidation extends EventTarget {
      * this.form = new ReactFormInputValidation(this,
      *                                   {
      *                                      locale: 'en'
-     *                                   })
+     *                                   });
      * ```
      */
     constructor(component: IReactComponent, options?: IOptions) {
@@ -184,19 +330,35 @@ export abstract class ReactFormInputValidation extends EventTarget {
     }
 
     /**
-     * Set the locale string for error messages
+     * Set the validation rules for form fields.
+     * Find the available [rules](https://www.npmjs.com/package/validatorjs#available-rules) here.
      *
-     * @param locale string
+     * @param rules The rules to validate.
+     * @example
+     * ```js
+     *
+     * this.form.useRules({
+     *      email: "required|email",
+     *      password: "required"
+     * });
+     * ```
+     */
+    public useRules(rules): void { }
+
+    /**
+     * Set the locale string for error messages.
+     *
+     * @param locale
      * @example
      * ```js
      *
      * ReactFormInputValidation.useLang("en");
      * ```
      */
-    static useLang(locale: string): void {}
+    static useLang(locale: string): void { }
 
     /**
-     * Register Custom Validation Rules
+     * Register Custom Validation Rules.
      *
      * @param name The name of the rule.
      * @param callbackFn Returns a boolean to represent a successful or failed validation.
@@ -214,7 +376,7 @@ export abstract class ReactFormInputValidation extends EventTarget {
     static register(name: string, callbackFn: Function, errorMessage: string): void { }
 
     /**
-     * Register an asynchronous rule which accepts a passes callback
+     * Register an asynchronous rule which accepts a passes callback.
      *
      * @param name The name of the rule.
      * @param callbackFn
@@ -232,10 +394,10 @@ export abstract class ReactFormInputValidation extends EventTarget {
     static registerAsync(name: string, callbackFn: Function): void { }
 
     /**
-     * You can also add your own custom language by calling setMessages:
+     * You can also add your own custom language by calling setMessages.
      *
      * @param name The name of the rule.
-     * @param values A error messages object
+     * @param values A error messages object.
      * @example
      * ```js
      *
@@ -247,8 +409,9 @@ export abstract class ReactFormInputValidation extends EventTarget {
     static setMessages(name: string, values: object): void { }
 
     /**
-     * Get the raw object of messages for the given language
-     * @param name The name of the rule
+     * Get the raw object of messages for the given language.
+     *
+     * @param name The name of the rule.
      * @example
      * ```js
      *
@@ -258,7 +421,7 @@ export abstract class ReactFormInputValidation extends EventTarget {
     static getMessages(name: string): object { return _; }
 
     /***
-     * Get the default language being used
+     * Get the default language being used.
      * @example
      * ```js
      *
@@ -282,62 +445,54 @@ export abstract class ReactFormInputValidation extends EventTarget {
     static setAttributeFormatter(callbackFn: Function): void { }
 
     /**
-     * Set the validation rules for form fields.
-     * @param rules The rules to validate.
-     * @example
-     * ```js
-     *
-     * this.form.useRules({
-     *      email: "required|email",
-     *      password: "required"
-     * })
-     * ```
-     */
-    public useRules(rules): void { }
-
-    /**
      * Handle onchange event for input fields.
      *
+     * @param event
      * @example
      * ```js
      *
-     * // Refer "ReactFormInputValidation Interface" for react input form validator object creation
+     * // Refer "ReactFormInputValidation Interface" for react form input validator object creation
      *
-     * <input name="email" onChange={this.form.handleFieldsChange} value={this.state.fields.email}>
-     * ```
-     */
-    public handleFieldsChange(event) { }
-
-    /**
-     * A method to handle the react form submission
-     *
-     * @param event onsubmit event
-     * @example
-     * ```js
-     *
-     * // Refer "ReactFormInputValidation Interface" for react input form validator object creation
-     *
-     * <form onSubmit={form.handleSubmit}>
-     * </form>
-     * ```
-     */
-    public handleSubmit(event) { }
-
-    /**
-     * A method to handle the onblur event for every input in the form
-     *
-     * @param event onblur event
-     * @example
-     * ```js
-     *
-     * // Refer "ReactFormInputValidation Interface" for react input form validator object creation
      * <input
+     *      type="text"
      *      name="email"
+     *      onChange={this.form.handleChangeEvent}
      *      value={this.state.fields.email}
-     *      onChange={form.handleFieldsChange}
-     *      onBlur={form.handleBlurEvent}
      * >
      * ```
      */
-    public handleBlurEvent(event) { }
+    public handleChangeEvent(event: React.ChangeEvent<HTMLInputElement>): void { }
+
+    /**
+     * A method to handle the onblur event for input in the form.
+     *
+     * @param event
+     * @example
+     * ```js
+     *
+     * // Refer "ReactFormInputValidation Interface" for react form input validator object creation
+     * <input
+     *      type="text"
+     *      name="email"
+     *      value={this.state.fields.email}
+     *      onChange={this.form.handleChangeEvent}
+     *      onBlur={this.form.handleBlurEvent}
+     * >
+     * ```
+     */
+    public handleBlurEvent(event: React.FocusEvent<HTMLInputElement>): void { }
+
+    /**
+     * A method to handle the react form submission.
+     *
+     * @param event
+     * @example
+     * ```js
+     *
+     * // Refer "ReactFormInputValidation Interface" for react form input validator object creation
+     * <form onSubmit={this.form.handleSubmit}>
+     * </form>
+     * ```
+     */
+    public handleSubmit(event: React.FormEvent): void { }
 }

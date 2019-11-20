@@ -1,12 +1,13 @@
+const packageJson = require("./package.json");
 module.exports = {
     src: [
       "./src/specs"
     ],
     mode: "file",
-    theme: "./src/theme",
+    theme: "./theme",
     includeDeclarations: false,
     tsconfig: "tsconfig.json",
-    out: "./Documentation",
+    out: `./Documentation/${packageJson.version}`,
     excludePrivate: true,
     excludeProtected: false,
     excludeExternals: true,
