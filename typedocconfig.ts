@@ -1,9 +1,9 @@
 module.exports = {
     src: [
-      "./src/"
+      "./src/specs"
     ],
     mode: "file",
-    theme: "minimal",
+    theme: "./src/theme",
     includeDeclarations: false,
     tsconfig: "tsconfig.json",
     out: "./Documentation",

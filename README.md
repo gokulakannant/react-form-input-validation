@@ -34,7 +34,7 @@ class ValidationForm extends React.Component {
         email: "",
         phone_number: ""
       },
-      inputErrors: {}
+      errors: {}
     };
     this.form = new ReactFormValidation(
       this,
@@ -64,7 +64,7 @@ class ValidationForm extends React.Component {
                 />
               </label>
               <label className="error">
-                {this.state.inputErrors.name ? this.state.inputErrors.name.message : ""}
+                {this.state.errors.name ? this.state.errors.name.message : ""}
               </label>
             </p>
 
@@ -80,7 +80,7 @@ class ValidationForm extends React.Component {
                 />
               </label>
               <label className="error">
-                {this.state.inputErrors.email ? this.state.inputErrors.email.message : ""}
+                {this.state.errors.email ? this.state.errors.email.message : ""}
               </label>
             </p>
 
@@ -96,7 +96,7 @@ class ValidationForm extends React.Component {
                 />
               </label>
               <label className="error">
-                {this.state.inputErrors.phone_number ? this.state.inputErrors.phone_number.message : ""}
+                {this.state.errors.phone_number ? this.state.errors.phone_number.message : ""}
               </label>
             </p>
             <p>

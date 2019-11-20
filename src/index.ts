@@ -1,11 +1,29 @@
 const Validator = require("validatorjs");
-import { IReactComponent, IOptions, IInputErrors } from "./types/ReactTypes";
+import { IReactComponent, IOptions, IValidatorErrors, IDynamicKeyValues, ReactFormSubmitEventHandler } from "./specs/react-form-input-validator.spec";
 
-class ReactFormValidator {
+class ReactFormValidator extends EventTarget {
     private component: IReactComponent;
-    private submitCallback: Function;
     private rules: object = {};
-    private errors: IInputErrors = {};
+    private errors: IValidatorErrors = {};
+
+    /**
+     * Event registered to notify the onreactformsubmit in {@link ReactFormValidator}.
+     * @returns A callback function {@link ReactFormSubmitEventHandler}.
+     * @example
+     * ```js
+     *
+     *  // Refer "ReactFormValidator Interface" for react input form validator object creation
+     *
+     * this.form.addEventListener("onreactformsubmit", (fields) => {
+     *      // Make your ajax calls here.
+     * });
+     * // or
+     * this.form.onreactformsubmit = (fields) => {
+     *      // Make your ajax calls here.
+     * }
+     * ```
+     */
+    public onreactformsubmit: ReactFormSubmitEventHandler;
 
     /**
      * Construct the React Input Form Validator instance.
@@ -17,23 +35,18 @@ class ReactFormValidator {
      * @param options {@link Options}
      * @example
      * ```js
-     * let form = new ReactFormValidator(this,
-     *                                   {
-     *                                      email: "required|email",
-     *                                   },
-     *                                   (fields) => {
-     *                                      // Make ajax request here to send data to server
-     *                                   },
+     *
+     * // Recommanded to do this in constructor of the form component.
+     * this.form = new ReactFormValidator(this,
      *                                   {
      *                                      locale: 'en'
      *                                   })
      * ```
      */
-    constructor(component: IReactComponent, rules: object, callback: Function, options?: IOptions) {
+    constructor(component: IReactComponent, options?: IOptions) {
+        super();
         ReactFormValidator.useLang((options && options.locale) ? options.locale : "en");
         this.component = component;
-        this.rules = rules;
-        this.submitCallback = callback;
         this.handleFieldsChange = this.handleFieldsChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleBlurEvent = this.handleBlurEvent.bind(this);
@@ -45,9 +58,8 @@ class ReactFormValidator {
      * @param locale string
      * @example
      * ```js
-     * import ReactInputFormValidator from "react-input-form-validator";
      *
-     * ReactInputFormValidator.useLang("en");
+     * ReactFormValidator.useLang("en");
      * ```
      */
     static useLang(locale: string): void {
@@ -63,7 +75,8 @@ class ReactFormValidator {
      * :attribute inside errorMessage will be replaced with the attribute name.
      * @example
      * ```js
-     * ReactInputFormValidator.register('telephone', function(value, requirement, attribute) {
+     *
+     * ReactFormValidator.register('telephone', function(value, requirement, attribute) {
      *      return value.match(/^\d{3}-\d{3}-\d{4}$/);
      * }, 'The :attribute phone number is not in the format XXX-XXX-XXXX.');
      *
@@ -74,6 +87,26 @@ class ReactFormValidator {
     }
 
     /**
+     * Register an asynchronous rule which accepts a passes callback
+     *
+     * @param name The name of the rule.
+     * @param callbackFn
+     * @example
+     * ```js
+     *
+     * Validator.registerAsync('username_available', function(username, attribute, req, passes) {
+     *      // do your database/api checks here etc
+     *      // then call the `passes` method where appropriate:
+     *      passes(); // if username is available
+     *      passes(false, 'Username has already been taken.'); // if username is not available
+     * });
+     * ```
+     */
+    static registerAsync(name: string, callbackFn: Function): void {
+        Validator.registerAsync(name, callbackFn);
+    }
+
+    /**
      * You can also add your own custom language by calling setMessages:
      *
      * @param name The name of the rule.
@@ -81,7 +114,7 @@ class ReactFormValidator {
      * @example
      * ```js
      *
-     * ReactInputFormValidator.setMessages('lang_code', {
+     * ReactFormValidator.setMessages('lang_code', {
      *  required: 'The :attribute field is required.'
      * });
      * ```
@@ -95,7 +128,8 @@ class ReactFormValidator {
      * @param name The name of the rule
      * @example
      * ```js
-     * ReactInputFormValidator.getMessages('lang_code');
+     *
+     * ReactFormValidator.getMessages('lang_code');
      * ```
      */
     static getMessages(name: string): object {
@@ -106,7 +140,8 @@ class ReactFormValidator {
      * Get the default language being used
      * @example
      * ```js
-     * ReactInputFormValidator.getDefaultLang(); // returns e.g. 'en'
+     *
+     * ReactFormValidator.getDefaultLang(); // returns e.g. 'en'
      * ```
      */
     static getDefaultLang(): string {
@@ -114,23 +149,56 @@ class ReactFormValidator {
     }
 
     /**
+     * You can supply global custom attribute names in your app with the attributes property.
+     *
+     * @param callbackFn A Callback function to configure the attribute name.
+     * @example
+     * ```js
+     *
+     * ReactFormValidator.setAttributeFormatter(function(attribute) {
+     *      return attribute.replace(/_/g, ' ');
+     * });
+     * ```
+     */
+    static setAttributeFormatter(callbackFn: Function): void {
+        Validator.setAttributeFormatter(callbackFn);
+    }
+
+    /**
+     * Set the validation rules for form fields.
+     * @param rules The rules to validate.
+     * @example
+     * ```js
+     *
+     * this.form.useRules({
+     *      email: "required|email",
+     *      password: "required"
+     * })
+     * ```
+     */
+    public useRules(rules): void {
+        this.rules = rules;
+    }
+
+    /**
      * Handle onchange event for input fields.
      *
      * @example
      * ```js
+     *
      * // Refer "ReactFormValidator Interface" for react input form validator object creation
      *
-     * <input name="email" onChange={form.handleFieldsChange} value={this.state.fields.email}>
+     * <input name="email" onChange={this.form.handleFieldsChange} value={this.state.fields.email}>
      * ```
      */
     public handleFieldsChange(event) {
-        const name = event.target.name;
+        const name: string = event.target.name;
         if (this.component && name) {
             const fields = Object.assign({}, this.component.state.fields);
             fields[name] = (event.target.type === "checkbox") ? this.getCheckboxValues(event.target) :
                             (event.target.type === "radio") ? this.getRadioButtonValues(event.target) :
                             event.target.value;
-            this.component.setState({ fields: fields, isOwnUpdate: true });
+            this.component.setState({ fields: fields, isValidatorUpdate: true });
         }
     }
 
@@ -140,6 +208,7 @@ class ReactFormValidator {
      * @param event onsubmit event
      * @example
      * ```js
+     *
      * // Refer "ReactFormValidator Interface" for react input form validator object creation
      *
      * <form onSubmit={form.handleSubmit}>
@@ -148,8 +217,8 @@ class ReactFormValidator {
      */
     public handleSubmit(event) {
         event.preventDefault();
-        if (this.validateForm(event.target) && this.submitCallback) {
-            this.submitCallback(this.component.state.fields);
+        if (this.validateForm(event.target)) {
+            this.dispatchEvent(this.getEvent(this.component.state.fields));
         }
     }
 
@@ -159,6 +228,7 @@ class ReactFormValidator {
      * @param event onblur event
      * @example
      * ```js
+     *
      * // Refer "ReactFormValidator Interface" for react input form validator object creation
      * <input
      *      name="email"
@@ -170,21 +240,11 @@ class ReactFormValidator {
      */
     public handleBlurEvent(event) {
         const element: HTMLInputElement = event.target;
-
-        const initValidator = () => {
-            const inputErrors = this.validate(element);
-            if (this.component && this.component.hasOwnProperty("state")) {
-                this.errors = this.getErrorMessage(inputErrors as Array<any>,
-                                this.component.state.inputErrors ? this.component.state.inputErrors : {});
-                this.component.setState({ inputErrors: this.errors });
-            }
-        };
-
-        if ((element.dataset !== undefined && element.dataset.hasOwnProperty("datepicker")) ||
-            element.getAttribute("data-datepicker")) {
-            setTimeout(initValidator, 200);
-        } else {
-            initValidator();
+        const inputErrors = this.validate(element);
+        if (this.component && this.component.hasOwnProperty("state")) {
+            this.errors = this.getErrorMessage(inputErrors as Array<any>,
+                            this.component.state.errors ? this.component.state.errors : {});
+            this.component.setState({ errors: this.errors, isValidatorUpdate: true });
         }
     }
 
@@ -196,27 +256,28 @@ class ReactFormValidator {
     private validateForm(form): boolean {
         if (!this.component || !this.component.state) {
             this.component.state = {
-                inputErrors: {}
+                errors: {}
             };
         }
 
-        form.querySelectorAll("textarea,select,input:not([type='submit']):not([type='file']):not([data-ignore-validation]):not([data-unique])")
+        form.querySelectorAll("textarea,select,input:not([type='submit']):not([type='file']):not([data-ignore-validation])")
             .forEach((elem) => {
             const inputErrors = this.validate(elem);
-            Object.assign(this.component.state.inputErrors,
-                            this.getErrorMessage(inputErrors as Array<any>, this.component.state.inputErrors));
+            Object.assign(this.component.state.errors,
+                            this.getErrorMessage(inputErrors as Array<any>, this.component.state.errors));
         });
 
         this.component.setState({
-            inputErrors: this.component.state.inputErrors
+            errors: this.component.state.errors,
+            isValidatorUpdate: true
         });
 
-        if (Object.keys(this.component.state.inputErrors)[0] &&
-            form.querySelector(`[name="${Object.keys(this.component.state.inputErrors)[0]}"]`)) {
-            form.querySelector(`[name="${Object.keys(this.component.state.inputErrors)[0]}"]`).focus();
+        if (Object.keys(this.component.state.errors)[0] &&
+            form.querySelector(`[name="${Object.keys(this.component.state.errors)[0]}"]`)) {
+            form.querySelector(`[name="${Object.keys(this.component.state.errors)[0]}"]`).focus();
         }
 
-        return Object.keys(this.component.state.inputErrors).length === 0;
+        return Object.keys(this.component.state.errors).length === 0;
     }
 
     /**
@@ -272,7 +333,7 @@ class ReactFormValidator {
      *
      * @param element HTMLInputElement
      */
-    private validate(element: HTMLInputElement): object {
+    private validate(element: HTMLInputElement): IDynamicKeyValues {
         const errors = {};
         const name = element.getAttribute("name");
         const data = {
@@ -294,22 +355,37 @@ class ReactFormValidator {
             });
         }
 
+        if (element.hasAttribute("data-async")) {
+            const passes: Function = () => {
+                delete this.errors[name];
+            };
+
+            const fails: Function = () => {
+                const errMessage: string = validate.errors.first(name);
+                errors[name] = errMessage;
+            };
+
+            validate.checkAsync(passes, fails);
+            return errors;
+        }
+
         if (validate.fails()) {
             const errMessage: string = validate.errors.first(name);
             errors[name] = errMessage;
             return errors;
         }
+
         delete this.errors[name];
         return errors;
     }
 
     /**
-     * Format the error message from validatorjs error to {@link IInputErrors}
+     * Format the error message from validatorjs error to {@link IValidatorErrors}
      *
      * @param inputErrors Array of error strings
      * @param errors Errors
      */
-    private getErrorMessage(inputErrors: Array<any>, errors: any): IInputErrors {
+    private getErrorMessage(inputErrors: Array<any>, errors: IValidatorErrors): IValidatorErrors {
         Object.keys(inputErrors).forEach((field) => {
             const msg = inputErrors[field];
             if (msg) {
@@ -320,6 +396,17 @@ class ReactFormValidator {
             }
         });
         return errors;
+    }
+
+    /**
+     * Creating custom event to send form data.
+     *
+     * @param details The form fields to send in the event
+     */
+    private getEvent(details: any): CustomEvent {
+        return new CustomEvent("onreactformsubmit", {
+            detail: details
+        });
     }
 }
 
