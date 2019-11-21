@@ -270,20 +270,40 @@ export interface IValidatorErrors {
 export type ReactFormSubmitEventHandler = (fields: any) => void;
 
 type EventListener = (data?: any) => void;
-type ErrorEventListener = (error: Error) => void;
 
 abstract class EventTarget {
-    addEventListener(
-        eventName: string,
-        eventListener: EventListener,
-        errorEventListener?: ErrorEventListener,
-        options?: any): void {}
+    private listeners = {};
 
-    removeEventListener(
-        eventName: string,
-        eventListener: EventListener,
-        errorEventListener?: ErrorEventListener,
-        options?: any): void {}
+    protected addListener(type: string, callback: EventListener) {
+        if (!(type in this.listeners)) {
+            this.listeners[type] = [];
+        }
+        this.listeners[type].push(callback);
+    }
+
+    protected removeListener(type: string, callback: EventListener) {
+        if (!(type in this.listeners)) {
+            return;
+        }
+        const stack = this.listeners[type];
+        for (let i = 0, l = stack.length; i < l; i++) {
+            if (stack[i] === callback) {
+                stack.splice(i, 1);
+                return;
+            }
+        }
+    }
+
+    protected emit(event: CustomEvent) {
+        if (!(event.type in this.listeners)) {
+            return true;
+        }
+        const stack = this.listeners[event.type].slice();
+        for (let i = 0, l = stack.length; i < l; i++) {
+            stack[i].call(this, event.detail);
+        }
+        return !event.defaultPrevented;
+    }
 }
 
 // tslint:disable-next-line:prefer-const
@@ -294,13 +314,14 @@ export abstract class ReactFormInputValidation extends EventTarget {
      * Event registered to notify the form submission in {@link ReactFormInputValidation}.
      * After successfull validation it will emit the valid data.
      *
+     * @event
      * @returns A callback function {@link ReactFormSubmitEventHandler}.
      * @example
      * ```js
      *
      *  // Refer "ReactFormInputValidation Interface" for react form input validator object creation
      *
-     * this.form.addEventListener("onreactformsubmit", (fields) => {
+     * this.form.addEventListener("reactformsubmit", (fields) => {
      *      // Make your ajax calls here.
      * });
      * // or
@@ -328,22 +349,6 @@ export abstract class ReactFormInputValidation extends EventTarget {
     constructor(component: IReactComponent, options?: IOptions) {
         super();
     }
-
-    /**
-     * Set the validation rules for form fields.
-     * Find the available [rules](https://www.npmjs.com/package/validatorjs#available-rules) here.
-     *
-     * @param rules The rules to validate.
-     * @example
-     * ```js
-     *
-     * this.form.useRules({
-     *      email: "required|email",
-     *      password: "required"
-     * });
-     * ```
-     */
-    public useRules(rules): void { }
 
     /**
      * Set the locale string for error messages.
@@ -377,6 +382,7 @@ export abstract class ReactFormInputValidation extends EventTarget {
 
     /**
      * Register an asynchronous rule which accepts a passes callback.
+     * The `data-async` custom attribute should be added in the html element.
      *
      * @param name The name of the rule.
      * @param callbackFn
@@ -389,6 +395,15 @@ export abstract class ReactFormInputValidation extends EventTarget {
      *      passes(); // if username is available
      *      passes(false, 'Username has already been taken.'); // if username is not available
      * });
+     *
+     * <input
+     *      type="text"
+     *      name="email"
+     *      onChange={this.form.handleChangeEvent}
+     *      onBlur={this.form.handleBlurEvent}
+     *      value={this.state.fields.email}
+     *      data-async
+     * >
      * ```
      */
     static registerAsync(name: string, callbackFn: Function): void { }
@@ -443,6 +458,38 @@ export abstract class ReactFormInputValidation extends EventTarget {
      * ```
      */
     static setAttributeFormatter(callbackFn: Function): void { }
+
+    /**
+     * Used to subscribe the event.
+     *
+     * @param event Name of the event.
+     * @param callback Event listener for the corresponding event
+     */
+    public addEventListener(event: string, callback: (...args: Array<any>) => void): this { return _; }
+
+    /**
+     * Used to unsubscribe the event.
+     *
+     * @param event Name of the event to unsubscribe.
+     * @param callback Exact event listener needs to be passed which is used to subscribe.
+     */
+    public removeEventListener(event: string, callback: (...args: Array<any>) => void): this { return _; }
+
+    /**
+     * Set the validation rules for form fields.
+     * Find the available [rules](https://www.npmjs.com/package/validatorjs#available-rules) here.
+     *
+     * @param rules The rules to validate.
+     * @example
+     * ```js
+     *
+     * this.form.useRules({
+     *      email: "required|email",
+     *      password: "required"
+     * });
+     * ```
+     */
+    public useRules(rules): void { }
 
     /**
      * Handle onchange event for input fields.

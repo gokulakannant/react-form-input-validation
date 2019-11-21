@@ -125,6 +125,10 @@ Refer the below example to override the attribute name,
 
 The output will be like, "The USER NAME field is required.".
 
+## Changelog
+
+Recently Updated? Please read the [changelog](CHANGELOG.md).
+
 ## License
 
 This project is licensed under the GPLv3 License - see the [LICENSE.md](LICENSE.md) file for details.

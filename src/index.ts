@@ -1,17 +1,18 @@
 const Validator = require("validatorjs");
-import { IReactComponent, IOptions, IValidatorErrors, IDynamicKeyValues, ReactFormSubmitEventHandler } from "./specs/react-form-input-validator.spec";
+import { IReactComponent, IOptions, IValidatorErrors, IDynamicKeyValues, ReactFormSubmitEventHandler,
+    ReactFormInputValidation as BaseValidator } from "./specs/react-form-input-validator.spec";
 
-class ReactFormInputValidation extends EventTarget {
+class ReactFormInputValidation extends BaseValidator {
     private component: IReactComponent;
     private rules: object = {};
     private errors: IValidatorErrors = {};
-    public onreactformsubmit: ReactFormSubmitEventHandler;
+    private _onreactformsubmit: ReactFormSubmitEventHandler;
 
     constructor(component: IReactComponent, options?: IOptions) {
-        super();
+        super(component, options);
         ReactFormInputValidation.useLang((options && options.locale) ? options.locale : "en");
         this.component = component;
-        this.handleFieldsChange = this.handleFieldsChange.bind(this);
+        this.handleChangeEvent = this.handleChangeEvent.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleBlurEvent = this.handleBlurEvent.bind(this);
     }
@@ -44,11 +45,34 @@ class ReactFormInputValidation extends EventTarget {
         Validator.setAttributeFormatter(callbackFn);
     }
 
+    public set onreactformsubmit(callback: ReactFormSubmitEventHandler) {
+        if (this._onreactformsubmit) {
+            super.removeListener("reactformsubmit", this._onreactformsubmit);
+        }
+
+        this._onreactformsubmit = callback;
+        super.addListener("reactformsubmit", this._onreactformsubmit);
+    }
+
+    public get onreactformsubmit(): ReactFormSubmitEventHandler {
+        return this._onreactformsubmit;
+    }
+
+    public addEventListener(event: string, callback: (...args: Array<any>) => void): this {
+        super.addListener(event, callback);
+        return this;
+    }
+
+    public removeEventListener(event: string, callback: (...args: Array<any>) => void): this {
+        super.removeListener(event, callback);
+        return this;
+    }
+
     public useRules(rules): void {
         this.rules = rules;
     }
 
-    public handleFieldsChange(event: React.ChangeEvent<HTMLInputElement>) {
+    public handleChangeEvent(event: React.ChangeEvent<HTMLInputElement>) {
         const name: string = event.target.name;
         if (this.component && name) {
             const fields = Object.assign({}, this.component.state.fields);
@@ -59,22 +83,21 @@ class ReactFormInputValidation extends EventTarget {
         }
     }
 
-    public handleSubmit(event: React.FormEvent) {
-        event.preventDefault();
-        if (this.validateForm(event.target)) {
-            this.dispatchEvent(this.getEvent(this.component.state.fields));
-        }
-    }
-
     public handleBlurEvent(event: React.FocusEvent<HTMLInputElement>) {
         const element: HTMLInputElement = event.target;
         this.validate(element).then((inputErrors) => {
             if (this.component && this.component.hasOwnProperty("state")) {
-                this.errors = this.getErrorMessage(inputErrors as Array<any>,
-                                this.component.state.errors ? this.component.state.errors : {});
+                this.errors = Object.assign(this.errors, inputErrors);
                 this.component.setState({ errors: this.errors, isValidatorUpdate: true });
             }
         }).catch(error => console.error(error));
+    }
+
+    public handleSubmit(event: React.FormEvent) {
+        event.preventDefault();
+        if (this.validateForm(event.target)) {
+            super.emit(this.getEvent(this.component.state.fields));
+        }
     }
 
     /**
@@ -92,14 +115,12 @@ class ReactFormInputValidation extends EventTarget {
         form.querySelectorAll("textarea,select,input:not([type='submit']):not([type='file']):not([data-ignore-validation])")
             .forEach((element) => {
             this.validate(element).then((inputErrors) => {
-                Object.assign(this.component.state.errors,
-                            this.getErrorMessage(inputErrors as Array<string>, this.component.state.errors));
+                this.errors = Object.assign(this.errors, inputErrors);
+                this.component.setState({
+                    errors: this.errors,
+                    isValidatorUpdate: true
+                });
             }).catch(error => console.error(error));
-        });
-
-        this.component.setState({
-            errors: this.component.state.errors,
-            isValidatorUpdate: true
         });
 
         if (Object.keys(this.component.state.errors)[0] &&
@@ -164,71 +185,53 @@ class ReactFormInputValidation extends EventTarget {
      * @param element HTMLInputElement
      */
     private validate(element: HTMLInputElement): Promise<IDynamicKeyValues> {
-        const promise = this.createPromise();
-        const errors = {};
-        const name = element.getAttribute("name");
-        const data = {
-            [name]: this.getValueFromHtmlNode(element)
-        };
-
-        const rule = {};
-        rule[name] = this.rules[name];
-
-        if (!rule[name]) {
-            return promise.resolve(errors);
-        }
-
-        const validate = new Validator(data, rule);
-
-        if (element.hasAttribute("data-attribute-name")) {
-            validate.setAttributeNames({
-                [name]: element.getAttribute("data-attribute-name")
-            });
-        }
-
-        if (element.hasAttribute("data-async")) {
-            const passes: Function = () => {
-                delete this.errors[name];
-                promise.resolve(errors);
+        return new Promise((resolve, reject) => {
+            const errors = {};
+            const name = element.getAttribute("name");
+            const data = {
+                [name]: this.getValueFromHtmlNode(element)
             };
 
-            const fails: Function = () => {
+            const rule = {};
+            rule[name] = this.rules[name];
+
+            if (!rule[name]) {
+                return resolve(errors);
+            }
+
+            const validate = new Validator(data, rule);
+
+            if (element.hasAttribute("data-attribute-name")) {
+                validate.setAttributeNames({
+                    [name]: element.getAttribute("data-attribute-name")
+                });
+            }
+
+            if (element.hasAttribute("data-async")) {
+                const passes: Function = () => {
+                    delete this.errors[name];
+                    resolve(errors);
+                };
+
+                const fails: Function = () => {
+                    const errMessage: string = validate.errors.first(name);
+                    errors[name] = errMessage;
+                    resolve(errors);
+                };
+
+                validate.checkAsync(passes, fails);
+                return;
+            }
+
+            if (validate.fails()) {
                 const errMessage: string = validate.errors.first(name);
                 errors[name] = errMessage;
-                promise.resolve(errors);
-            };
-
-            validate.checkAsync(passes, fails);
-            return promise;
-        }
-
-        if (validate.fails()) {
-            const errMessage: string = validate.errors.first(name);
-            errors[name] = errMessage;
-            return promise.resolve(errors);
-        }
-
-        delete this.errors[name];
-        return promise.resolve(errors);
-    }
-
-    /**
-     * Format the error message from validatorjs error to {@link IValidatorErrors}
-     *
-     * @param inputErrors Array of error strings
-     * @param errors Errors
-     */
-    private getErrorMessage(inputErrors: Array<string>, errors: IValidatorErrors): IValidatorErrors {
-        Object.keys(inputErrors).forEach((field) => {
-            const msg: string = inputErrors[field];
-            if (msg) {
-                errors[field] = {
-                    has: true,
-                    message: msg
-                };
+                return resolve(errors);
             }
+
+            delete this.errors[name];
+            return resolve(errors);
         });
-        return errors;
     }
 
     /**
@@ -237,26 +240,9 @@ class ReactFormInputValidation extends EventTarget {
      * @param details The form fields to send in the event
      */
     private getEvent(details: any): CustomEvent {
-        return new CustomEvent("onreactformsubmit", {
+        return new CustomEvent("reactformsubmit", {
             detail: details
         });
-    }
-
-    /**
-     * Helper method for creating promise
-     */
-    private createPromise() {
-        let localResolve;
-        let localReject;
-
-        const promise: any = new Promise((resolve, reject) => {
-            localResolve = resolve;
-            localReject = reject;
-        });
-        promise.resolve = localResolve;
-        promise.reject = localReject;
-
-        return promise;
     }
 }
 
