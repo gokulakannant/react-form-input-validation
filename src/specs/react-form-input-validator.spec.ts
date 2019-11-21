@@ -220,7 +220,7 @@ export enum Lang {
     zh_TW = "zh_TW",
 }
 /**
- * A dictionary object to have options.
+ * A dictionary object to have React Form Input Validation options.
  * @example
  * ```js
  *
@@ -231,7 +231,7 @@ export enum Lang {
  */
 export interface IOptions {
     /**
-     * The supported languages are {@link Lang}
+     * The supported languages are in {@link Lang} enum.
      */
     locale: Lang;
 }
@@ -239,32 +239,21 @@ export interface IOptions {
  * A dictionary object.
  * @example
  * ```js
+ *
  * {
- *      has: true,
- *      message: "The name field is required"
+ *      name: "The name field is required"
  * }
  * ```
  */
-interface IError {
-    /**
-     * Denotes has error
-     */
-    has: boolean;
-    /**
-     * Denotes corresponding error message
-     */
-    message: string;
-}
-
 export interface IValidatorErrors {
     /**
      * Denotes all input errors
      */
-    [key: string]: IError;
+    [key: string]: string;
 }
 
 /**
- * Event callback function for onreactformsubmit.
+ * Event callback function for onformsubmit.
  * @param fields A valid form fields data.
  */
 export type ReactFormSubmitEventHandler = (fields: any) => void;
@@ -319,18 +308,19 @@ export abstract class ReactFormInputValidation extends EventTarget {
      * @example
      * ```js
      *
-     *  // Refer "ReactFormInputValidation Interface" for react form input validator object creation
+     * // Refer "ReactFormInputValidation Interface" for react form input validator object creation
      *
-     * this.form.addEventListener("reactformsubmit", (fields) => {
+     * this.form.addEventListener("formsubmit", (fields) => {
      *      // Make your ajax calls here.
      * });
      * // or
-     * this.form.onreactformsubmit = (fields) => {
+     * this.form.onformsubmit = (fields) => {
      *      // Make your ajax calls here.
      * }
      * ```
+     * @see Example in [Code Sandbox](https://codesandbox.io/s/react-form-input-validationonformsubmit-ctkcn).
      */
-    public onreactformsubmit: ReactFormSubmitEventHandler;
+    public onformsubmit: ReactFormSubmitEventHandler;
     /**
      * Construct the React Form Input Validator instance.
      *
@@ -339,11 +329,9 @@ export abstract class ReactFormInputValidation extends EventTarget {
      * @example
      * ```js
      *
-     * // Recommanded to do this in constructor of the form component.
-     * this.form = new ReactFormInputValidation(this,
-     *                                   {
-     *                                      locale: 'en'
-     *                                   });
+     * import ReactFormInputValidation from "react-form-input-validation";
+     * // Recommanded to do this in constructor or componentDidMount of the form component.
+     * this.form = new ReactFormInputValidation(this, { locale: 'en' });
      * ```
      */
     constructor(component: IReactComponent, options?: IOptions) {
@@ -359,6 +347,7 @@ export abstract class ReactFormInputValidation extends EventTarget {
      *
      * ReactFormInputValidation.useLang("en");
      * ```
+     * @see Example in [Code Sandbox](https://codesandbox.io/s/react-form-input-validationlocale-rhz6w).
      */
     static useLang(locale: string): void { }
 
@@ -377,6 +366,7 @@ export abstract class ReactFormInputValidation extends EventTarget {
      * }, 'The :attribute phone number is not in the format XXX-XXX-XXXX.');
      *
      * ```
+     * @see Example in [Code Sandbox](https://codesandbox.io/s/react-form-input-validationregister-yobct)
      */
     static register(name: string, callbackFn: Function, errorMessage: string): void { }
 
@@ -395,7 +385,8 @@ export abstract class ReactFormInputValidation extends EventTarget {
      *      passes(); // if username is available
      *      passes(false, 'Username has already been taken.'); // if username is not available
      * });
-     *
+     * ```
+     * ```html
      * <input
      *      type="text"
      *      name="email"
@@ -405,6 +396,7 @@ export abstract class ReactFormInputValidation extends EventTarget {
      *      data-async
      * >
      * ```
+     * @see Example in [Code Sandbox](https://codesandbox.io/s/react-form-input-validationregisterasync-hzp8b).
      */
     static registerAsync(name: string, callbackFn: Function): void { }
 
@@ -420,6 +412,7 @@ export abstract class ReactFormInputValidation extends EventTarget {
      *  required: 'The :attribute field is required.'
      * });
      * ```
+     * @see Example in [Code Sandbox](https://codesandbox.io/s/react-form-input-validationattribute-formattors-bfomi).
      */
     static setMessages(name: string, values: object): void { }
 
@@ -432,6 +425,7 @@ export abstract class ReactFormInputValidation extends EventTarget {
      *
      * ReactFormInputValidation.getMessages('lang_code');
      * ```
+     * @see Example in [Code Sandbox](https://codesandbox.io/s/react-form-input-validationattribute-formattors-bfomi).
      */
     static getMessages(name: string): object { return _; }
 
@@ -442,6 +436,7 @@ export abstract class ReactFormInputValidation extends EventTarget {
      *
      * ReactFormInputValidation.getDefaultLang(); // returns e.g. 'en'
      * ```
+     * @see Example in [Code Sandbox](https://codesandbox.io/s/react-form-input-validationlocale-rhz6w).
      */
     static getDefaultLang(): string { return _; }
 
@@ -456,6 +451,7 @@ export abstract class ReactFormInputValidation extends EventTarget {
      *      return attribute.replace(/_/g, ' ');
      * });
      * ```
+     * @see Example in [Code Sandbox](https://codesandbox.io/s/react-form-input-validationattribute-formattors-bfomi).
      */
     static setAttributeFormatter(callbackFn: Function): void { }
 
@@ -464,6 +460,7 @@ export abstract class ReactFormInputValidation extends EventTarget {
      *
      * @param event Name of the event.
      * @param callback Event listener for the corresponding event
+     * @see Example in [Code Sandbox](https://codesandbox.io/s/react-form-input-validationonformsubmit-ctkcn).
      */
     public addEventListener(event: string, callback: (...args: Array<any>) => void): this { return _; }
 
@@ -472,6 +469,7 @@ export abstract class ReactFormInputValidation extends EventTarget {
      *
      * @param event Name of the event to unsubscribe.
      * @param callback Exact event listener needs to be passed which is used to subscribe.
+     * @see Example in [Code Sandbox](https://codesandbox.io/s/react-form-input-validationonformsubmit-ctkcn).
      */
     public removeEventListener(event: string, callback: (...args: Array<any>) => void): this { return _; }
 
@@ -496,7 +494,7 @@ export abstract class ReactFormInputValidation extends EventTarget {
      *
      * @param event
      * @example
-     * ```js
+     * ```html
      *
      * // Refer "ReactFormInputValidation Interface" for react form input validator object creation
      *
@@ -515,7 +513,7 @@ export abstract class ReactFormInputValidation extends EventTarget {
      *
      * @param event
      * @example
-     * ```js
+     * ```html
      *
      * // Refer "ReactFormInputValidation Interface" for react form input validator object creation
      * <input
@@ -534,7 +532,7 @@ export abstract class ReactFormInputValidation extends EventTarget {
      *
      * @param event
      * @example
-     * ```js
+     * ```html
      *
      * // Refer "ReactFormInputValidation Interface" for react form input validator object creation
      * <form onSubmit={this.form.handleSubmit}>

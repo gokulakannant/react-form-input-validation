@@ -32,20 +32,20 @@ class ValidationForm extends React.Component {
       extras: "required|array"
     });
 
-    this.form.addEventListener("reactformsubmit", (fields) => {
+    this.form.addEventListener("formsubmit", (fields) => {
       console.log("1st reactsubmit", fields);
     });
 
-    this.form.addEventListener("reactformsubmit", (fields) => {
+    this.form.addEventListener("formsubmit", (fields) => {
       console.log("2nd reactsubmit", fields);
     });
 
-    this.form.onreactformsubmit = (fields) => {
-      console.log("1st onreactformsubmit", fields);
+    this.form.onformsubmit = (fields) => {
+      console.log("1st onformsubmit", fields);
     }
 
-    this.form.onreactformsubmit = (fields) => {
-      console.log("2nd onreactformsubmit", fields);
+    this.form.onformsubmit = (fields) => {
+      console.log("2nd onformsubmit", fields);
     }
 
     ReactFormValidation.registerAsync('username_available', function(username, attribute, req, passes) {
@@ -63,10 +63,9 @@ class ValidationForm extends React.Component {
   }
 
   render() {
-    console.log(this.state)
     return (
         <div style={{maxWidth: "600px", margin: "0 auto"}}>
-          <h3>React Input Form Validation</h3>
+          <h3>React Form Input Validation</h3>
           <form
             className="myForm"
             noValidate

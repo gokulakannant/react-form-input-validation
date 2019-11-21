@@ -6,7 +6,7 @@
 A customized [validatorjs](https://www.npmjs.com/package/validatorjs) library to validate the react forms.
 
 * [Supported Rules](https://www.npmjs.com/package/validatorjs#available-rules) (It is supports all validatorjs rules)
-* [Documentation](https://gokulakannant.github.io/react-form-input-validation/index.html)
+* [Documentation](https://gokulakannant.github.io/react-form-input-validation/v2.0.0/index.html)
 * [Demo](https://codesandbox.io/s/react-form-input-validation-demp-hyuju?fontsize=14&hidenavigation=1&theme=dark) (in CodeSandbox)
 
 ## Why use react-form-input-validation?
@@ -19,11 +19,11 @@ A customized [validatorjs](https://www.npmjs.com/package/validatorjs) library to
 
 ## Usage
 
-A example form has given below. View all available apis in [documentation](https://gokulakannant.github.io/react-form-input-validation/classes/reactformvalidator.html).
+A example form has given below. View all available apis in [documentation](https://gokulakannant.github.io/react-form-input-validation/v2.0.0/index.html).
 
 ```js
 import React from "react";
-import ReactFormValidation from "react-form-input-validation";
+import ReactFormInputValidation from "react-form-input-validation";
 
 class ValidationForm extends React.Component {
   constructor(props) {
@@ -36,17 +36,15 @@ class ValidationForm extends React.Component {
       },
       errors: {}
     };
-    this.form = new ReactFormValidation(
-      this,
-      {
+    this.form = new ReactFormInputValidation(this);
+    this.form.useRules({
         name: "required",
         email: "required|email",
         phone_number: "required|numeric|digits_between:10,12",
-      },
-      (fields) => {
-        alert(JSON.stringify(fields));
-      }
-    );
+    });
+    this.form.onformsubmit = (fields) => {
+      // Do you ajax calls here.
+    }
   }
 
   render() {
@@ -59,12 +57,12 @@ class ValidationForm extends React.Component {
                   type="text"
                   name="name"
                   onBlur={this.form.handleBlurEvent}
-                  onChange={this.form.handleFieldsChange}
+                  onChange={this.form.handleChangeEvent}
                   value={this.state.fields.name}
                 />
               </label>
               <label className="error">
-                {this.state.errors.name ? this.state.errors.name.message : ""}
+                {this.state.errors.name ? this.state.errors.name : ""}
               </label>
             </p>
 
@@ -75,12 +73,12 @@ class ValidationForm extends React.Component {
                   type="email"
                   name="email"
                   onBlur={this.form.handleBlurEvent}
-                  onChange={this.form.handleFieldsChange}
+                  onChange={this.form.handleChangeEvent}
                   value={this.state.fields.email}
                 />
               </label>
               <label className="error">
-                {this.state.errors.email ? this.state.errors.email.message : ""}
+                {this.state.errors.email ? this.state.errors.email : ""}
               </label>
             </p>
 
@@ -91,12 +89,12 @@ class ValidationForm extends React.Component {
                   type="tel"
                   name="phone_number"
                   onBlur={this.form.handleBlurEvent}
-                  onChange={this.form.handleFieldsChange}
+                  onChange={this.form.handleChangeEvent}
                   value={this.state.fields.phone_number}
                 />
               </label>
               <label className="error">
-                {this.state.errors.phone_number ? this.state.errors.phone_number.message : ""}
+                {this.state.errors.phone_number ? this.state.errors.phone_number : ""}
               </label>
             </p>
             <p>
@@ -117,13 +115,19 @@ Refer the below example to override the attribute name,
         type="text"
         name="name"
         onBlur={this.form.handleBlurEvent}
-        onChange={this.form.handleFieldsChange}
+        onChange={this.form.handleChangeEvent}
         value={this.state.fields.name}
         data-attribute-name="USER NAME"
     />
 ```
 
 The output will be like, "The USER NAME field is required.".
+
+## Supported form fields
+
+## Versions
+
+Latest Version: 2.0.0. For more versions refer [VERSIONS.md](VERSIONS.md).
 
 ## Changelog
 

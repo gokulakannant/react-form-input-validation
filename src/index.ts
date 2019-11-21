@@ -1,12 +1,12 @@
 const Validator = require("validatorjs");
 import { IReactComponent, IOptions, IValidatorErrors, IDynamicKeyValues, ReactFormSubmitEventHandler,
-    ReactFormInputValidation as BaseValidator } from "./specs/react-form-input-validator.spec";
+    ReactFormInputValidation as BaseValidation } from "./specs/react-form-input-validator.spec";
 
-class ReactFormInputValidation extends BaseValidator {
+class ReactFormInputValidation extends BaseValidation {
     private component: IReactComponent;
     private rules: object = {};
     private errors: IValidatorErrors = {};
-    private _onreactformsubmit: ReactFormSubmitEventHandler;
+    private _onformsubmit: ReactFormSubmitEventHandler;
 
     constructor(component: IReactComponent, options?: IOptions) {
         super(component, options);
@@ -45,17 +45,17 @@ class ReactFormInputValidation extends BaseValidator {
         Validator.setAttributeFormatter(callbackFn);
     }
 
-    public set onreactformsubmit(callback: ReactFormSubmitEventHandler) {
-        if (this._onreactformsubmit) {
-            super.removeListener("reactformsubmit", this._onreactformsubmit);
+    public set onformsubmit(callback: ReactFormSubmitEventHandler) {
+        if (this._onformsubmit) {
+            super.removeListener("formsubmit", this._onformsubmit);
         }
 
-        this._onreactformsubmit = callback;
-        super.addListener("reactformsubmit", this._onreactformsubmit);
+        this._onformsubmit = callback;
+        super.addListener("formsubmit", this._onformsubmit);
     }
 
-    public get onreactformsubmit(): ReactFormSubmitEventHandler {
-        return this._onreactformsubmit;
+    public get onformsubmit(): ReactFormSubmitEventHandler {
+        return this._onformsubmit;
     }
 
     public addEventListener(event: string, callback: (...args: Array<any>) => void): this {
@@ -240,7 +240,7 @@ class ReactFormInputValidation extends BaseValidator {
      * @param details The form fields to send in the event
      */
     private getEvent(details: any): CustomEvent {
-        return new CustomEvent("reactformsubmit", {
+        return new CustomEvent("formsubmit", {
             detail: details
         });
     }
