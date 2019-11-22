@@ -14,3 +14,4 @@ dist/typedocconfig.d.ts
 Documentation/
 node_modules/
 .travis.yml
+theme/

@@ -1,4 +1,4 @@
-# React Input Form Validation
+# React Form Input Validation
 
 [![npm package](https://img.shields.io/npm/v/react-form-input-validation)](https://www.npmjs.com/package/react-form-input-validation)
 [![Build Status](https://api.travis-ci.org/gokulakannant/react-form-input-validation.png?branch=master)](https://travis-ci.org/gokulakannant/react-form-input-validation)

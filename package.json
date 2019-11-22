@@ -4,7 +4,8 @@
   "description": "A validator package to validate the react forms",
   "main": "./dist/bundle.js",
   "license": "GPLv3",
-  "author": "gokulakannant <gokulakannanthangaraji@gmail.com>",
+  "author": "gokulakannant <gokulakannanthangaraji@gmail.com> (https://gokulakannant.github.io)",
+  "homepage": "https://gokulakannant.github.io/react-form-input-validation/v2.0.0/index.html",
   "repository": {
     "type": "git",
     "url": "https://github.com/gokulakannant/react-form-input-validation.git"
