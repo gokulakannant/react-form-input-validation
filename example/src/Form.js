@@ -32,20 +32,8 @@ class ValidationForm extends React.Component {
       extras: "required|array"
     });
 
-    this.form.addEventListener("formsubmit", (fields) => {
-      console.log("1st reactsubmit", fields);
-    });
-
-    this.form.addEventListener("formsubmit", (fields) => {
-      console.log("2nd reactsubmit", fields);
-    });
-
     this.form.onformsubmit = (fields) => {
-      console.log("1st onformsubmit", fields);
-    }
-
-    this.form.onformsubmit = (fields) => {
-      console.log("2nd onformsubmit", fields);
+      console.log(fields);
     }
 
     ReactFormValidation.registerAsync('username_available', function(username, attribute, req, passes) {
@@ -82,7 +70,7 @@ class ValidationForm extends React.Component {
                   onChange={this.form.handleChangeEvent}
                   value={this.state.fields.customer_name}
                   // To override the attribute name
-                  data-attribute-name="CUSTOMER NAME"
+                  data-attribute-name="Customer Name"
                   data-async
                 />
               </label>
@@ -221,11 +209,12 @@ class ValidationForm extends React.Component {
 
             <p>
               <label>
-                Pickup Date/Time
+                Pickup Date
                 <input
                   type="date"
                   name="pickup_time"
                   onChange={this.form.handleChangeEvent}
+                  onBlur={this.form.handleBlurEvent}
                   value={this.state.fields.pickup_time}
                 />
               </label>
@@ -244,6 +233,7 @@ class ValidationForm extends React.Component {
                   name="pickup_place"
                   value={this.state.fields.pickup_place}
                   onChange={this.form.handleChangeEvent}
+                  onBlur={this.form.handleBlurEvent}
                 >
                   <option value="">Select One</option>
                   <option value="office">Taxi Office</option>
@@ -266,6 +256,7 @@ class ValidationForm extends React.Component {
                   name="dropoff_place"
                   value={this.state.fields.dropoff_place}
                   onChange={this.form.handleChangeEvent}
+                  onBlur={this.form.handleBlurEvent}
                   list="destinations"
                 />
               </label>
