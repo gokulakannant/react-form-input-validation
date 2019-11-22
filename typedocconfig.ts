@@ -1,18 +1,19 @@
+const packageJson = require("./package.json");
 module.exports = {
     src: [
-      "./src/"
+      "./src/specs"
     ],
     mode: "file",
-    theme: "minimal",
+    theme: "./theme",
     includeDeclarations: false,
     tsconfig: "tsconfig.json",
-    out: "./Documentation",
+    out: `./Documentation/v${packageJson.version}`,
     excludePrivate: true,
-    excludeProtected: false,
+    excludeProtected: true,
     excludeExternals: true,
-    excludeNotExported: false,
-    readme: "README.md",
-    name: `React Input Form Validation`,
+    excludeNotExported: true,
+    readme: "CHANGELOG.md",
+    name: `React Form Input Validation API's v${packageJson.version}`,
     ignoreCompilerErrors: true,
     plugin: "none",
     listInvalidSymbolLinks: true,

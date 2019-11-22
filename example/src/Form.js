@@ -1,5 +1,5 @@
 import React from "react";
-import ReactFormValidation from "react-form-validation";
+import ReactFormValidation from "react-form-input-validation";
 import "./Form.css";
 
 class ValidationForm extends React.Component {
@@ -17,26 +17,33 @@ class ValidationForm extends React.Component {
         dropoff_place: "",
         extras: []
       },
-      inputErrors: {}
+      errors: {}
     };
-    this.form = new ReactFormValidation(
-      this,
-      {
-        customer_name: "required",
-        email_address: "required|email",
-        phone_number: "required|numeric|digits_between:10,12",
-        pickup_time: "required|date",
-        taxi: "required",
-        pickup_place: "required",
-        comments: "required|max:20",
-        dropoff_place: "required",
-        extras: "required|array"
-      },
-      (fields) => {
-        // Place to dispatch the form submit actions
-        alert(JSON.stringify(fields));
-      }
-    );
+    this.form = new ReactFormValidation(this, { locale: "en" });
+    this.form.useRules({
+      customer_name: "required|username_available",
+      email_address: "required|email",
+      phone_number: "required|numeric|digits_between:10,12",
+      pickup_time: "required|date",
+      taxi: "required",
+      pickup_place: "required",
+      comments: "required|max:20",
+      dropoff_place: "required",
+      extras: "required|array"
+    });
+
+    this.form.onformsubmit = (fields) => {
+      console.log(fields);
+    }
+
+    ReactFormValidation.registerAsync('username_available', function(username, attribute, req, passes) {
+      setTimeout(() => {
+        if (username === "foo")
+          passes(false, 'Username has already been taken.'); // if username is not available
+        else
+          passes();
+      }, 1000);
+    });
     /* let messages = ReactFormValidation.getMessages('en');
     messages.required = 'Whoops, :attribute field is required.';
     ReactFormValidation.setMessages('en', messages);
@@ -46,7 +53,7 @@ class ValidationForm extends React.Component {
   render() {
     return (
         <div style={{maxWidth: "600px", margin: "0 auto"}}>
-          <h3>React Input Form Validation</h3>
+          <h3>React Form Input Validation</h3>
           <form
             className="myForm"
             noValidate
@@ -60,15 +67,16 @@ class ValidationForm extends React.Component {
                   type="text"
                   name="customer_name"
                   onBlur={this.form.handleBlurEvent}
-                  onChange={this.form.handleFieldsChange}
+                  onChange={this.form.handleChangeEvent}
                   value={this.state.fields.customer_name}
                   // To override the attribute name
-                  data-attribute-name="CUSTOMER NAME"
+                  data-attribute-name="Customer Name"
+                  data-async
                 />
               </label>
               <label className="error">
-                {this.state.inputErrors.customer_name
-                  ? this.state.inputErrors.customer_name.message
+                {this.state.errors.customer_name
+                  ? this.state.errors.customer_name
                   : ""}
               </label>
             </p>
@@ -80,13 +88,13 @@ class ValidationForm extends React.Component {
                   type="tel"
                   name="phone_number"
                   onBlur={this.form.handleBlurEvent}
-                  onChange={this.form.handleFieldsChange}
+                  onChange={this.form.handleChangeEvent}
                   value={this.state.fields.phone_number}
                 />
               </label>
               <label className="error">
-                {this.state.inputErrors.phone_number
-                  ? this.state.inputErrors.phone_number.message
+                {this.state.errors.phone_number
+                  ? this.state.errors.phone_number
                   : ""}
               </label>
             </p>
@@ -98,13 +106,13 @@ class ValidationForm extends React.Component {
                   type="email"
                   name="email_address"
                   onBlur={this.form.handleBlurEvent}
-                  onChange={this.form.handleFieldsChange}
+                  onChange={this.form.handleChangeEvent}
                   value={this.state.fields.email_address}
                 />
               </label>
               <label className="error">
-                {this.state.inputErrors.email_address
-                  ? this.state.inputErrors.email_address.message
+                {this.state.errors.email_address
+                  ? this.state.errors.email_address
                   : ""}
               </label>
             </p>
@@ -117,7 +125,7 @@ class ValidationForm extends React.Component {
                   <input
                     type="radio"
                     name="taxi"
-                    onChange={this.form.handleFieldsChange}
+                    onChange={this.form.handleChangeEvent}
                     value="car"
                   />{" "}
                   Car{" "}
@@ -129,7 +137,7 @@ class ValidationForm extends React.Component {
                   <input
                     type="radio"
                     name="taxi"
-                    onChange={this.form.handleFieldsChange}
+                    onChange={this.form.handleChangeEvent}
                     value="van"
                   />{" "}
                   Van{" "}
@@ -141,15 +149,15 @@ class ValidationForm extends React.Component {
                   <input
                     type="radio"
                     name="taxi"
-                    onChange={this.form.handleFieldsChange}
+                    onChange={this.form.handleChangeEvent}
                     value="tuk tuk"
                   />{" "}
                   Tuk Tuk{" "}
                 </label>
               </p>
               <label className="error">
-                {this.state.inputErrors.taxi
-                  ? this.state.inputErrors.taxi.message
+                {this.state.errors.taxi
+                  ? this.state.errors.taxi
                   : ""}
               </label>
             </fieldset>
@@ -162,7 +170,7 @@ class ValidationForm extends React.Component {
                   <input
                     type="checkbox"
                     name="extras"
-                    onChange={this.form.handleFieldsChange}
+                    onChange={this.form.handleChangeEvent}
                     value="baby"
                   />{" "}
                   Baby Seat{" "}
@@ -174,7 +182,7 @@ class ValidationForm extends React.Component {
                   <input
                     type="checkbox"
                     name="extras"
-                    onChange={this.form.handleFieldsChange}
+                    onChange={this.form.handleChangeEvent}
                     value="wheelchair"
                   />{" "}
                   Wheelchair Access{" "}
@@ -186,32 +194,33 @@ class ValidationForm extends React.Component {
                   <input
                     type="checkbox"
                     name="extras"
-                    onChange={this.form.handleFieldsChange}
+                    onChange={this.form.handleChangeEvent}
                     value="tip"
                   />{" "}
                   Stock Tip{" "}
                 </label>
               </p>
               <label className="error">
-                {this.state.inputErrors.extras
-                  ? this.state.inputErrors.extras.message
+                {this.state.errors.extras
+                  ? this.state.errors.extras
                   : ""}
               </label>
             </fieldset>
 
             <p>
               <label>
-                Pickup Date/Time
+                Pickup Date
                 <input
                   type="date"
                   name="pickup_time"
-                  onChange={this.form.handleFieldsChange}
+                  onChange={this.form.handleChangeEvent}
+                  onBlur={this.form.handleBlurEvent}
                   value={this.state.fields.pickup_time}
                 />
               </label>
               <label className="error">
-                {this.state.inputErrors.pickup_time
-                  ? this.state.inputErrors.pickup_time.message
+                {this.state.errors.pickup_time
+                  ? this.state.errors.pickup_time
                   : ""}
               </label>
             </p>
@@ -223,7 +232,8 @@ class ValidationForm extends React.Component {
                   id="pickup_place"
                   name="pickup_place"
                   value={this.state.fields.pickup_place}
-                  onChange={this.form.handleFieldsChange}
+                  onChange={this.form.handleChangeEvent}
+                  onBlur={this.form.handleBlurEvent}
                 >
                   <option value="">Select One</option>
                   <option value="office">Taxi Office</option>
@@ -232,8 +242,8 @@ class ValidationForm extends React.Component {
                 </select>
               </label>
               <label className="error">
-                {this.state.inputErrors.pickup_place
-                  ? this.state.inputErrors.pickup_place.message
+                {this.state.errors.pickup_place
+                  ? this.state.errors.pickup_place
                   : ""}
               </label>
             </p>
@@ -245,7 +255,8 @@ class ValidationForm extends React.Component {
                   type="text"
                   name="dropoff_place"
                   value={this.state.fields.dropoff_place}
-                  onChange={this.form.handleFieldsChange}
+                  onChange={this.form.handleChangeEvent}
+                  onBlur={this.form.handleBlurEvent}
                   list="destinations"
                 />
               </label>
@@ -256,8 +267,8 @@ class ValidationForm extends React.Component {
                 <option value="Fred Flinstone's House" />
               </datalist>
               <label className="error">
-                {this.state.inputErrors.dropoff_place
-                  ? this.state.inputErrors.dropoff_place.message
+                {this.state.errors.dropoff_place
+                  ? this.state.errors.dropoff_place
                   : ""}
               </label>
             </p>
@@ -269,13 +280,13 @@ class ValidationForm extends React.Component {
                   name="comments"
                   maxLength="20"
                   value={this.state.fields.comments}
-                  onChange={this.form.handleFieldsChange}
+                  onChange={this.form.handleChangeEvent}
                   onBlur={this.form.handleBlurEvent}
                 ></textarea>
               </label>
               <label className="error">
-                {this.state.inputErrors.comments
-                  ? this.state.inputErrors.comments.message
+                {this.state.errors.comments
+                  ? this.state.errors.comments
                   : ""}
               </label>
             </p>

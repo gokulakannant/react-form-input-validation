@@ -1,0 +1,245 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{{#ifCond model.name '==' project.name}}{{project.name}}{{else}}{{model.name}} | {{project.name}}{{/ifCond}}</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="{{relativeURL "assets/css/main.css"}}">
+</head>
+<body>
+
+{{> header}}
+
+<div class="container container-main">
+    <div class="row">
+        <div class="col-9 col-content">
+            {{{contents}}}
+        </div>
+        <div class="col-3 col-menu menu-sticky-wrap menu-highlight">
+            <nav class="tsd-navigation primary">
+                <ul>
+                    {{#each navigation.children}}
+                        {{> navigation}}
+                    {{/each}}
+                </ul>
+            </nav>
+
+            <nav class="tsd-navigation secondary menu-sticky">
+                <ul class="before-current">
+                    {{#each toc.children}}
+                        {{> toc.root}}
+                    {{/each}}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+{{> footer}}
+
+<div class="overlay"></div>
+<script src="{{relativeURL "assets/js/main.js"}}"></script>
+<script>
+window.addEventListener("scroll", () => {
+  var scrollTop = document.documentElement.scrollTop;
+  if (scrollTop > 0)
+    document.querySelector("header").classList.add("sticky");
+  else
+    document.querySelector("header").classList.remove("sticky");
+});
+
+window.addEventListener("load", () => {
+  document.querySelectorAll("aside").forEach(aside => {
+    aside.parentElement.removeChild(aside);
+  });
+
+  let unsupported = document.querySelector("#tsd-filter-unsupported");
+  let unsupportedState = localStorage.getItem("phoenix-unsupported");
+  if (unsupportedState === null) {
+    unsupportedState = false;
+    localStorage.setItem("phoenix-unsupported", unsupportedState);
+  }
+  unsupported.checked = JSON.parse(unsupportedState);
+  hideUnsupportedAPIs(unsupported);
+  // Update the UX of dictionary objects
+  updateDictionaryIcon();
+});
+
+function updateDictionaryIconInIndexAndTree(element) {
+  if (!element)
+    return;
+
+  let items = element.getElementsByTagName("li");
+  if (!items)
+    return;
+
+  let dictionaryData = localStorage.getItem("phoenix-dictionary-class-list");
+  if (!dictionaryData)
+    return;
+
+  let dictionarySet = new Set(JSON.parse(dictionaryData));
+  Array.from(items).forEach((e) => {
+    if (e.classList.contains("tsd-kind-class") && e.firstElementChild &&
+        dictionarySet.has(e.firstElementChild.text)) {
+      e.classList.remove("tsd-kind-class");
+      e.classList.add("tsd-kind-dictionary");
+    } else if (e.classList.contains("tsd-kind-property") &&
+               e.classList.contains("tsd-parent-kind-class")) {
+      if (e.parentElement && e.parentElement.parentElement &&
+          e.parentElement.parentElement.classList.contains("tsd-kind-dictionary")) {
+        e.classList.remove("tsd-parent-kind-class");
+        e.classList.add("tsd-parent-kind-dictionary");
+      }
+    }
+  });
+}
+
+function updateDictionaryIconInModule(element) {
+  if (!element && !element.firstElementChild)
+    return;
+
+  let dictionarySet = new Set();
+  Array.from(element.firstElementChild.children).forEach((e) => {
+    dictionarySet.add(e.textContent);
+  });
+
+  let parent = element;
+  while (parent) {
+    if (parent.tagName.toLowerCase() === "section")
+      break;
+    parent = parent.parentElement ? parent.parentElement : null;
+  }
+
+  if (!parent && !parent.nextElementSibling)
+    return;
+
+  let classesList;
+  Array.from(parent.nextElementSibling.getElementsByTagName("h3")).forEach((node) => {
+    if (node.innerText === "Classes") {
+      classesList = node.nextElementSibling.children;
+    }
+  });
+
+  if (!classesList)
+    return;
+
+  Array.from(classesList).forEach((e) => {
+    if (dictionarySet.has(e.textContent)) {
+      e.classList.remove("tsd-kind-class");
+      e.classList.remove("tsd-parent-kind-class");
+      e.classList.add("tsd-kind-dictionary");
+      e.classList.add("tsd-parent-kind-dictionary");
+    }
+  });
+
+  if (element.parentElement.parentElement.childElementCount === 1) {
+    let pNode = parent.parentNode;
+    pNode.removeChild(parent);
+  }
+
+  let dictionaryListArray;
+  let existingDictionaryArray = localStorage.getItem("phoenix-dictionary-class-list");
+  if (!existingDictionaryArray) {
+    dictionaryListArray = [...dictionarySet];
+  } else {
+    let existingDictionarySet = new Set(JSON.parse(existingDictionaryArray));
+    let updatedDictionarySet = new Set([...existingDictionarySet, ...dictionarySet]);
+    dictionaryListArray = [...updatedDictionarySet];
+  }
+  localStorage.setItem("phoenix-dictionary-class-list", JSON.stringify(dictionaryListArray));
+}
+
+function updateDictionaryIconInClassSection(element) {
+  let parent = element;
+  while (parent) {
+    if (parent.tagName.toLowerCase() === "section")
+      break;
+    parent = parent.parentElement ? parent.parentElement : null;
+  }
+
+  if (!parent && !parent.nextElementSibling && !parent.nextElementSibling.nextElementSibling)
+    return;
+
+  let indexSectionElement = parent.nextElementSibling.nextElementSibling;
+  let propertiesSectionElement = indexSectionElement.nextElementSibling;
+  propertiesSectionElement.querySelectorAll(".tsd-member").forEach((node) => {
+    node.classList.remove("tsd-parent-kind-class");
+    node.classList.add("tsd-parent-kind-dictionary");
+  });
+
+  let properties;
+  Array.from(indexSectionElement.getElementsByTagName("h3")).forEach((node) => {
+    if (node.innerText === "Properties") {
+      properties = node.nextElementSibling.children;
+    }
+  });
+
+  if (!properties)
+    return;
+
+  Array.from(properties).forEach((e) => {
+    e.classList.remove("tsd-parent-kind-class");
+    e.classList.add("tsd-parent-kind-dictionary");
+  });
+}
+
+function updateDictionaryIcon() {
+  document.querySelectorAll(".phoenix-dictionary-class-list").forEach((node) => {
+    updateDictionaryIconInModule(node);
+  });
+
+  document.querySelectorAll(".phoenix-api-dictionary").forEach((node) => {
+    updateDictionaryIconInClassSection(node);
+  });
+
+  document.querySelectorAll(".tsd-navigation.secondary").forEach((node) => {
+    updateDictionaryIconInIndexAndTree(node);
+  });
+}
+
+function hideInIndexAndTree(element, show) {
+  if (!element)
+    return;
+  var h3 = element.querySelector("h3");
+  if (!h3)
+    return;
+
+  var name = h3.textContent.split(" ").pop();
+  document.querySelectorAll(".tsd-kind-property, .tsd-kind-method, .tsd-kind-enum, .tsd-kind-enum-member, .tsd-kind-type-alias").forEach((item) => {
+    var anchorElement = item.querySelector("a");
+    if (anchorElement) {
+      var itemName = anchorElement.textContent.trim();
+      if (itemName === name)
+        item.style.display = show ? "list-item" : "none";
+    }
+  });
+}
+
+function hideUnsupportedAPIs(checkbox) {
+  localStorage.setItem("phoenix-unsupported", checkbox.checked);
+  show = checkbox.checked;
+  document.querySelectorAll(".phoenix-api-unsupported").forEach((node) => {
+    var parent = node;
+    while (parent) {
+      if (parent.tagName.toLowerCase() === "section")
+        break;
+      parent = parent.parentElement ? parent.parentElement : null;
+    }
+    if (parent && parent.classList.contains("tsd-member") && parent.parentElement) {
+      parent.style.display = show ? "block" : "none";
+      hideInIndexAndTree(parent, show);
+    }
+  });
+}
+
+
+</script>
+<script>if (location.protocol == 'file:') document.write('<script src="{{relativeURL "assets/js/search.js"}}"><' + '/script>');</script>
+
+{{> analytics}}
+
+</body>
+</html>
