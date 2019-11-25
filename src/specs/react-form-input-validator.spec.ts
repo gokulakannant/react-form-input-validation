@@ -403,31 +403,34 @@ export abstract class ReactFormInputValidation extends EventTarget {
     /**
      * You can also add your own custom language by calling setMessages.
      *
-     * @param name The name of the rule.
+     * @param langCode Override {@link Lang} code validation error messages.
      * @param values A error messages object.
      * @example
      * ```js
      *
-     * ReactFormInputValidation.setMessages('lang_code', {
+     * import ReactFormInputValidation, { Lang } from "react-form-input-validation";
+     *
+     * ReactFormInputValidation.setMessages(Lang.en, {
      *  required: 'The :attribute field is required.'
      * });
      * ```
      * @see Example in [Code Sandbox](https://codesandbox.io/s/react-form-input-validationattribute-formattors-bfomi).
      */
-    static setMessages(name: string, values: object): void { }
+    static setMessages(langCode: Lang, values: object): void { }
 
     /**
      * Get the raw object of messages for the given language.
      *
-     * @param name The name of the rule.
+     * @param langCode Retrive {@link Lang} code validation error messages.
      * @example
      * ```js
      *
-     * ReactFormInputValidation.getMessages('lang_code');
+     * import ReactFormInputValidation, { Lang } from "react-form-input-validation";
+     * ReactFormInputValidation.getMessages(Lang.en); (i.e) 'en'
      * ```
      * @see Example in [Code Sandbox](https://codesandbox.io/s/react-form-input-validationattribute-formattors-bfomi).
      */
-    static getMessages(name: string): object { return _; }
+    static getMessages(langCode: Lang): object { return _; }
 
     /***
      * Get the default language being used.
@@ -438,7 +441,7 @@ export abstract class ReactFormInputValidation extends EventTarget {
      * ```
      * @see Example in [Code Sandbox](https://codesandbox.io/s/react-form-input-validationlocale-rhz6w).
      */
-    static getDefaultLang(): string { return _; }
+    static getDefaultLang(): Lang { return _; }
 
     /**
      * You can supply global custom attribute names in your app with the attributes property.

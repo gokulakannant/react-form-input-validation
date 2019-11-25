@@ -1,5 +1,5 @@
 import React from "react";
-import ReactFormValidation from "react-form-input-validation";
+import ReactFormValidation, { Lang } from "react-form-input-validation";
 import "./Form.css";
 
 class ValidationForm extends React.Component {
@@ -44,10 +44,12 @@ class ValidationForm extends React.Component {
           passes();
       }, 1000);
     });
-    /* let messages = ReactFormValidation.getMessages('en');
-    messages.required = 'Whoops, :attribute field is required.';
+    let messages = ReactFormValidation.getMessages(Lang.en);
+    console.log(messages);
+    /* messages.required = 'Whoops, :attribute field is required.';
     ReactFormValidation.setMessages('en', messages);
-    ReactFormValidation.useLang('en') */
+    console.log(Lang)
+    ReactFormValidation.useLang(Lang.fr) */
   }
 
   render() {

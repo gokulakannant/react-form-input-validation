@@ -8,6 +8,7 @@ The most recent version is recommended in production.
 
 |Versions|Documents|Releases|
 |--------|---------|--------|
+|v2.0.1|[Documentation](https://gokulakannant.github.io/react-form-input-validation/v2.0.1/index.html)|[Release notes](https://github.com/gokulakannant/react-form-input-validation/releases/tag/v2.0.1)|
 |v2.0.0|[Documentation](https://gokulakannant.github.io/react-form-input-validation/v2.0.0/index.html)|[Release notes](https://github.com/gokulakannant/react-form-input-validation/releases/tag/v2.0.0)|
 |v1.0.1|[Documentation](https://gokulakannant.github.io/react-form-input-validation/index.html)|             |
 
