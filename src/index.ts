@@ -1,6 +1,6 @@
 const Validator = require("validatorjs");
 import { IReactComponent, IOptions, IValidatorErrors, IDynamicKeyValues, ReactFormSubmitEventHandler,
-    ReactFormInputValidation as BaseValidation } from "./specs/react-form-input-validator.spec";
+    ReactFormInputValidation as BaseValidation, Lang } from "./specs/react-form-input-validator.spec";
 
 class ReactFormInputValidation extends BaseValidation {
     private component: IReactComponent;
@@ -29,15 +29,15 @@ class ReactFormInputValidation extends BaseValidation {
         Validator.registerAsync(name, callbackFn);
     }
 
-    static setMessages(name: string, values: object): void {
-        Validator.setMessages(name, values);
+    static setMessages(langCode: Lang, values: object): void {
+        Validator.setMessages(langCode, values);
     }
 
-    static getMessages(name: string): object {
-        return Validator.getMessages(name);
+    static getMessages(langCode: Lang): object {
+        return Validator.getMessages(langCode);
     }
 
-    static getDefaultLang(): string {
+    static getDefaultLang(): Lang {
         return Validator.getDefaultLang();
     }
 
@@ -95,9 +95,11 @@ class ReactFormInputValidation extends BaseValidation {
 
     public handleSubmit(event: React.FormEvent) {
         event.preventDefault();
-        if (this.validateForm(event.target)) {
-            super.emit(this.getEvent(this.component.state.fields));
-        }
+        this.validateForm(event.target).then(hasError => {
+            if (!hasError) {
+                super.emit(this.getEvent(this.component.state.fields));
+            }
+        });
     }
 
     /**
@@ -105,30 +107,40 @@ class ReactFormInputValidation extends BaseValidation {
      *
      * @param form Html form
      */
-    private validateForm(form): boolean {
+    private validateForm(form): Promise<boolean> {
         if (!this.component || !this.component.state) {
             this.component.state = {
                 errors: {}
             };
         }
 
+        const validatePromises: Array<Promise<any>> = [];
+
         form.querySelectorAll("textarea,select,input:not([type='submit']):not([type='file']):not([data-ignore-validation])")
             .forEach((element) => {
-            this.validate(element).then((inputErrors) => {
-                this.errors = Object.assign(this.errors, inputErrors);
-                this.component.setState({
-                    errors: this.errors,
-                    isValidatorUpdate: true
-                });
-            }).catch(error => console.error(error));
+            validatePromises.push(this.validate(element));
         });
 
-        if (Object.keys(this.component.state.errors)[0] &&
-            form.querySelector(`[name="${Object.keys(this.component.state.errors)[0]}"]`)) {
-            form.querySelector(`[name="${Object.keys(this.component.state.errors)[0]}"]`).focus();
-        }
+        return new Promise((resolve) => {
+            Promise.all(validatePromises)
+                    .then((results) => {
+                       results.forEach((eachResult) => {
+                        this.errors = Object.assign(this.errors, eachResult);
+                        this.component.setState({
+                            errors: this.errors,
+                            isValidatorUpdate: true
+                        });
+                       });
 
-        return Object.keys(this.component.state.errors).length === 0;
+                       if (Object.keys(this.component.state.errors)[0] &&
+                            form.querySelector(`[name="${Object.keys(this.component.state.errors)[0]}"]`)) {
+                            form.querySelector(`[name="${Object.keys(this.component.state.errors)[0]}"]`).focus();
+                        }
+
+                       resolve(Object.keys(this.component.state.errors).length === 0);
+                    })
+                    .catch(errors => console.log(errors));
+        });
     }
 
     /**
@@ -246,4 +258,7 @@ class ReactFormInputValidation extends BaseValidation {
     }
 }
 
+export {
+    Lang
+};
 export default ReactFormInputValidation;
