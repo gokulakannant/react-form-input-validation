@@ -95,8 +95,8 @@ class ReactFormInputValidation extends BaseValidation {
 
     public handleSubmit(event: React.FormEvent) {
         event.preventDefault();
-        this.validateForm(event.target).then(hasError => {
-            if (!hasError) {
+        this.validateForm(event.target).then(hasNoError => {
+            if (hasNoError) {
                 super.emit(this.getEvent(this.component.state.fields));
             }
         });
