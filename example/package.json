@@ -5,14 +5,15 @@
   "dependencies": {
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
-    "react-form-input-validation": "^2.0.1",
+    "react-form-input-validation": "^2.0.2",
     "react-scripts": "3.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "auto-test": "cypress open"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -28,5 +29,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "cypress": "^3.6.1"
   }
 }

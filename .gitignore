@@ -2,3 +2,4 @@ node_modules/
 dist
 Documentation
 example/package-lock.json
+example/yarn.lock
