@@ -5,7 +5,7 @@
   "dependencies": {
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
-    "react-form-input-validation": "^2.0.1",
+    "react-form-input-validation": "^2.0.2",
     "react-scripts": "3.2.0"
   },
   "scripts": {

@@ -7,7 +7,7 @@
 A customized [validatorjs](https://www.npmjs.com/package/validatorjs) library to validate the react forms. It uses the [Controlled Components](https://reactjs.org/docs/forms.html#controlled-components) approach for validation.
 
 * [Supported Rules](https://www.npmjs.com/package/validatorjs#available-rules) (It is supports all validatorjs rules)
-* [Documentation](https://gokulakannant.github.io/react-form-input-validation/v2.0.1/index.html)
+* [Documentation](https://gokulakannant.github.io/react-form-input-validation/index.html)
 * [Demo](https://codesandbox.io/s/react-form-input-validation-demp-hyuju?fontsize=14&hidenavigation=1&theme=dark) (in CodeSandbox)
 
 ## Why use react-form-input-validation?
@@ -36,7 +36,7 @@ Using [yarn](https://yarnpkg.com/en/) as your package manager.
 
 ## Usage
 
-A example form has given below. View all available apis in [documentation](https://gokulakannant.github.io/react-form-input-validation/v2.0.1/index.html).
+A example form has given below. View all available apis in [documentation](https://gokulakannant.github.io/react-form-input-validation/classes/reactforminputvalidation.html).
 
 ```js
 import React from "react";
@@ -170,7 +170,7 @@ The input types button, submit, reset, hidden are exceptional from the above lis
 
 ## Versions
 
-Latest Version: 2.0.1. For more versions refer [VERSIONS.md](VERSIONS.md).
+Latest Version: 2.0.2. For more versions refer [VERSIONS.md](VERSIONS.md).
 
 ## Changelog
 
