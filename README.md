@@ -6,7 +6,7 @@
 
 A customized [validatorjs](https://www.npmjs.com/package/validatorjs) library to validate the react forms. It uses the [Controlled Components](https://reactjs.org/docs/forms.html#controlled-components) approach for validation.
 
-* [Supported Rules](https://www.npmjs.com/package/validatorjs#available-rules) (It is supports all validatorjs rules)
+* [Available Rules](Rules.md)
 * [Documentation](https://gokulakannant.github.io/react-form-input-validation/index.html)
 * [Demo](https://codesandbox.io/s/react-form-input-validation-demp-hyuju?fontsize=14&hidenavigation=1&theme=dark) (in CodeSandbox)
 
