@@ -2,7 +2,7 @@
 
 [![npm package](https://img.shields.io/npm/v/react-form-input-validation)](https://www.npmjs.com/package/react-form-input-validation)
 [![Build Status](https://api.travis-ci.org/gokulakannant/react-form-input-validation.png?branch=master)](https://travis-ci.org/gokulakannant/react-form-input-validation)
-[![GitHub license](https://img.shields.io/github/license/gokulakannant/react-form-input-validation.svg)](https://github.com/gokulakannant/react-form-input-validation/blob/master/LICENSE.md)
+[![GitHub license](https://img.shields.io/github/license/gokulakannant/react-form-input-validation.svg)](https://github.com/gokulakannant/react-form-input-validation/blob/master/LICENSE.md) [![Join the chat at https://gitter.im/react-form-input-validation/community](https://badges.gitter.im/react-form-input-validation/community.svg)](https://gitter.im/react-form-input-validation/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 A customized [validatorjs](https://www.npmjs.com/package/validatorjs) library to validate the react forms. It uses the [Controlled Components](https://reactjs.org/docs/forms.html#controlled-components) approach for validation.
 
