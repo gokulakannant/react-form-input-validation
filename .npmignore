@@ -5,7 +5,7 @@ webpack.config.js
 *.tgz
 
 !*/**/*.d.ts
-example/
+demo/
 tsconfig.json
 typedocconfig.ts
 webpack.config.js
