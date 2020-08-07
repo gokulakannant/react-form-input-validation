@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>React Form Input Validation API&#x27;s v2.0.3</title>
+	<title>React Form Input Validation API&#x27;s v2.0.4</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="index.html" class="title">React Form Input Validation API&#x27;s v2.0.3</a>
+					<a href="index.html" class="title">React Form Input Validation API&#x27;s v2.0.4</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -54,96 +54,105 @@
 					<a href="globals.html">Globals</a>
 				</li>
 			</ul>
-			<h1> React Form Input Validation API&#x27;s v2.0.3</h1>
+			<h1> React Form Input Validation API&#x27;s v2.0.4</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-9 col-content">
-			<section class="tsd-panel-group tsd-index-group">
-				<h2>Index</h2>
-				<section class="tsd-panel tsd-index-panel">
-					<div class="tsd-index-content">
-						<section class="tsd-index-section ">
-							<h3>Enumerations</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-enum"><a href="enums/lang.html" class="tsd-kind-icon">Lang</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Classes</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-class"><a href="classes/reactforminputvalidation.html" class="tsd-kind-icon">React<wbr>Form<wbr>Input<wbr>Validation</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Interfaces</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-interface"><a href="interfaces/idynamickeyvalues.html" class="tsd-kind-icon">IDynamic<wbr>Key<wbr>Values</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/ioptions.html" class="tsd-kind-icon">IOptions</a></li>
-								<li class="tsd-kind-interface tsd-has-type-parameter"><a href="interfaces/ireactcomponent.html" class="tsd-kind-icon">IReact<wbr>Component</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/ivalidatorerrors.html" class="tsd-kind-icon">IValidator<wbr>Errors</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Type aliases</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-type-alias"><a href="globals.html#reactformsubmiteventhandler" class="tsd-kind-icon">React<wbr>Form<wbr>Submit<wbr>Event<wbr>Handler</a></li>
-							</ul>
-						</section>
-					</div>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Type aliases</h2>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias">
-					<a name="reactformsubmiteventhandler" class="tsd-anchor"></a>
-					<h3>React<wbr>Form<wbr>Submit<wbr>Event<wbr>Handler</h3>
-					<div class="tsd-signature tsd-kind-icon">React<wbr>Form<wbr>Submit<wbr>Event<wbr>Handler<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/gokulakannant/react-form-input-validation/blob/4085192/src/specs/react-form-input-validator.spec.ts#L259">src/specs/react-form-input-validator.spec.ts:259</a></li>
+			<div class="tsd-panel tsd-typography">
+				<a href="#introduction" id="introduction" style="color: inherit; text-decoration: none;">
+					<h1>Introduction</h1>
+				</a>
+				<p>Documentation of React Form Input Validation API&#39;s for use of web developers validating React Forms.</p>
+				<a href="#changelog" id="changelog" style="color: inherit; text-decoration: none;">
+					<h2>Changelog</h2>
+				</a>
+				<p>All notable changes to React Form Input Validation APIs will be documented in this file.</p>
+				<p>The format is based on <a href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>.</p>
+				<a href="#204---07082020" id="204---07082020" style="color: inherit; text-decoration: none;">
+					<h2>[2.0.4] - 07/08/2020</h2>
+				</a>
+				<a href="#fixed" id="fixed" style="color: inherit; text-decoration: none;">
+					<h3>Fixed</h3>
+				</a>
+				<ul>
+					<li>Fixed Confirm password not working issue - <a href="https://github.com/gokulakannant/react-form-input-validation/issues/19">#19</a></li>
+				</ul>
+				<a href="#modified" id="modified" style="color: inherit; text-decoration: none;">
+					<h3>Modified</h3>
+				</a>
+				<ul>
+					<li>Reduced the package size with webpack configurations.</li>
+					<li>Performance optimization</li>
+				</ul>
+				<a href="#201---25112019" id="201---25112019" style="color: inherit; text-decoration: none;">
+					<h2>[2.0.1] - 25/11/2019</h2>
+				</a>
+				<a href="#fixed-1" id="fixed-1" style="color: inherit; text-decoration: none;">
+					<h3>Fixed</h3>
+				</a>
+				<ul>
+					<li>Fixed <code>onformsubmit</code> event is received with empty values.</li>
+				</ul>
+				<a href="#200---22112019" id="200---22112019" style="color: inherit; text-decoration: none;">
+					<h2>[2.0.0] - 22/11/2019</h2>
+				</a>
+				<a href="#added" id="added" style="color: inherit; text-decoration: none;">
+					<h3>Added</h3>
+				</a>
+				<ul>
+					<li>Added the following new API&#39;s<ul>
+							<li><a href="https://gokulakannant.github.io/react-form-input-validation/v2.0.0/classes/reactforminputvalidation.html#userules"><code>useRules</code></a></li>
+							<li><a href="https://gokulakannant.github.io/react-form-input-validation/v2.0.0/classes/reactforminputvalidation.html#registerasync"><code>registerAsync</code></a></li>
+							<li><a href="https://gokulakannant.github.io/react-form-input-validation/v2.0.0/classes/reactforminputvalidation.html#setattributeformatter"><code>setAttributeFormatter</code></a></li>
+							<li><a href="https://gokulakannant.github.io/react-form-input-validation/v2.0.0/classes/reactforminputvalidation.html#addeventlistener"><code>addEventListener</code></a></li>
+							<li><a href="https://gokulakannant.github.io/react-form-input-validation/v2.0.0/classes/reactforminputvalidation.html#removeeventlistener"><code>removeEventListener</code></a></li>
 						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Event callback function for onformsubmit.</p>
-						</div>
-						<dl class="tsd-comment-tags">
-							<dt>param</dt>
-							<dd><p>A valid form fields data.</p>
-							</dd>
-						</dl>
-					</div>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter-siganture">
-								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-alias tsd-is-not-exported">
-									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>fields<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-								</ul>
-								<ul class="tsd-descriptions">
-									<li class="tsd-description">
-										<h4 class="tsd-parameters-title">Parameters</h4>
-										<ul class="tsd-parameters">
-											<li>
-												<h5>fields: <span class="tsd-signature-type">any</span></h5>
-											</li>
-										</ul>
-										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-									</li>
-								</ul>
-							</li>
+					</li>
+					<li>A new custom event is introduced to provide validated form data.<ul>
+							<li><a href="https://gokulakannant.github.io/react-form-input-validation/v2.0.0/classes/reactforminputvalidation.html#onformsubmit"><code>onformsubmit</code></a></li>
 						</ul>
-					</div>
-				</section>
-			</section>
+					</li>
+					<li>A custom attribute <code>data-async</code> introduced to denotes async validation form field.
+					It should be mentioned in form field, if the form field has async validation. Refer <a href="https://gokulakannant.github.io/react-form-input-validation/v2.0.0/classes/reactforminputvalidation.html#registerasync"><code>registerAsync</code></a> API for more details.</li>
+				</ul>
+				<a href="#modified-1" id="modified-1" style="color: inherit; text-decoration: none;">
+					<h3>Modified</h3>
+				</a>
+				<ul>
+					<li>API Documentation contents has improved.</li>
+					<li>More Code Sandbox examples are added in the API document.</li>
+					<li>Modified API name from <code>handleFieldsChange</code> to <a href="https://gokulakannant.github.io/react-form-input-validation/v2.0.0/classes/reactforminputvalidation.html#handlechangeevent"><code>handleChangeEvent</code></a>.</li>
+					<li>Error message containing state <code>inputErrors</code> is renamed to <code>errors</code>.</li>
+					<li>Accessing error message in state is modified from <code>state.inputErrors.{form field name}.message</code> to <code>state.errors.{form field name}</code>.</li>
+				</ul>
+				<a href="#removed" id="removed" style="color: inherit; text-decoration: none;">
+					<h3>Removed</h3>
+				</a>
+				<ul>
+					<li><a href="https://gokulakannant.github.io/react-form-input-validation/v2.0.0/classes/reactforminputvalidation.html#constructor">Contructor</a> arguments reduced.<ul>
+							<li>Rules passing in consturctor is removed. And the alternate is <a href="https://gokulakannant.github.io/react-form-input-validation/v2.0.0/classes/reactforminputvalidation.html#userules"><code>useRules</code></a>.</li>
+							<li>Handle submit callback in constructor removed. And the alternate is <a href="https://gokulakannant.github.io/react-form-input-validation/v2.0.0/classes/reactforminputvalidation.html#onformsubmit"><code>onformsubmit</code></a> event.</li>
+						</ul>
+					</li>
+				</ul>
+				<a href="#101---14112019" id="101---14112019" style="color: inherit; text-decoration: none;">
+					<h2>[1.0.1] - 14/11/2019</h2>
+				</a>
+				<a href="#added-1" id="added-1" style="color: inherit; text-decoration: none;">
+					<h3>Added</h3>
+				</a>
+				<ul>
+					<li>A limited featured package has published.</li>
+				</ul>
+			</div>
 		</div>
 		<div class="col-3 col-menu menu-sticky-wrap menu-highlight">
 			<nav class="tsd-navigation primary">
 				<ul>
-					<li class="globals current ">
+					<li class="globals  ">
 						<a href="globals.html"><em>Globals</em></a>
 					</li>
 				</ul>
