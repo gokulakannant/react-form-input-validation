@@ -85,7 +85,7 @@ class ReactFormInputValidation extends BaseValidation {
 
     public handleBlurEvent(event: React.FocusEvent<HTMLInputElement>) {
         const element: HTMLInputElement = event.target;
-        this.validate(element).then((inputErrors) => {
+        this.validate([element]).then((inputErrors) => {
             if (this.component && this.component.hasOwnProperty("state")) {
                 this.errors = Object.assign(this.errors, inputErrors);
                 this.component.setState({ errors: this.errors, isValidatorUpdate: true });
@@ -114,32 +114,29 @@ class ReactFormInputValidation extends BaseValidation {
             };
         }
 
-        const validatePromises: Array<Promise<any>> = [];
+        const elements = [];
 
         form.querySelectorAll("textarea,select,input:not([type='submit']):not([type='file']):not([data-ignore-validation])")
             .forEach((element) => {
-            validatePromises.push(this.validate(element));
+            elements.push(element);
         });
 
         return new Promise((resolve) => {
-            Promise.all(validatePromises)
-                    .then((results) => {
-                       results.forEach((eachResult) => {
-                        this.errors = Object.assign(this.errors, eachResult);
-                        this.component.setState({
-                            errors: this.errors,
-                            isValidatorUpdate: true
-                        });
-                       });
+            this.validate(elements)
+                .then(results => {
+                    this.errors = results;
+                    this.component.setState({
+                        errors: this.errors,
+                        isValidatorUpdate: true
+                    });
 
-                       if (Object.keys(this.component.state.errors)[0] &&
-                            form.querySelector(`[name="${Object.keys(this.component.state.errors)[0]}"]`)) {
-                            form.querySelector(`[name="${Object.keys(this.component.state.errors)[0]}"]`).focus();
-                        }
-
-                       resolve(Object.keys(this.component.state.errors).length === 0);
-                    })
-                    .catch(errors => console.log(errors));
+                    if (Object.keys(this.component.state.errors)[0] &&
+                        form.querySelector(`[name="${Object.keys(this.component.state.errors)[0]}"]`)) {
+                        form.querySelector(`[name="${Object.keys(this.component.state.errors)[0]}"]`).focus();
+                    }
+                    resolve(Object.keys(this.component.state.errors).length === 0);
+                })
+                .catch(errors => console.log(errors));
         });
     }
 
@@ -166,83 +163,91 @@ class ReactFormInputValidation extends BaseValidation {
     }
 
     /**
-     * Parse the input element base on the element type get its value and return it.
-     *
-     * @param element HTMLInputElement or HTMLSelectElement
-     */
-    private getValueFromHtmlNode(element: HTMLInputElement | HTMLSelectElement): any {
-        switch (element.tagName) {
-            case "INPUT":
-                if (element.type === "radio") {
-                    return this.getRadioButtonValues(element as HTMLInputElement);
-                }
-
-                if (element.type === "checkbox") {
-                    return this.getCheckboxValues(element as HTMLInputElement);
-                }
-
-                return element.getAttribute("value");
-            case "SELECT":
-                return (<HTMLSelectElement> element).options[(<HTMLSelectElement> element).selectedIndex].value;
-            case "TEXTAREA":
-                return element.value;
-            default:
-                return element.getAttribute("value");
-        }
-    }
-
-    /**
      * Validate the single input element and return validation errors;
      *
      * @param element HTMLInputElement
      */
-    private validate(element: HTMLInputElement): Promise<IDynamicKeyValues> {
-        return new Promise((resolve, reject) => {
-            const errors = {};
-            const name = element.getAttribute("name");
-            const data = {
-                [name]: this.getValueFromHtmlNode(element)
-            };
-
+    private validate(elements: Array<HTMLInputElement>): Promise<IDynamicKeyValues> {
+        return new Promise((resolve) => {
+            let errors = <any> {};
+            const data = {};
             const rule = {};
-            rule[name] = this.rules[name];
+            const customAttributes = {};
+            let hasAsync: boolean = false;
 
-            if (!rule[name]) {
-                return resolve(errors);
-            }
+            elements.forEach(element => {
+                const name = element.getAttribute("name");
+                data[name] = this.component.state.fields[name];
 
-            const validate = new Validator(data, rule);
+                rule[name] = this.rules[name];
 
-            if (element.hasAttribute("data-attribute-name")) {
-                validate.setAttributeNames({
-                    [name]: element.getAttribute("data-attribute-name")
-                });
-            }
+                if (!rule[name]) {
+                    console.error(`Rule is not defind for ${name}`);
+                }
 
-            if (element.hasAttribute("data-async")) {
+                if (name.endsWith("_confirmation")) {
+                    const original = name.slice(0, name.indexOf("_confirmation"));
+                    data[original] = this.component.state.fields[original];
+                }
+
+                if (element.hasAttribute("data-attribute-name")) {
+                    customAttributes[name] = element.getAttribute("data-attribute-name");
+                }
+
+                if (element.hasAttribute("data-async")) {
+                    hasAsync = true;
+                }
+            });
+
+            const validator = new Validator(data, rule);
+            validator.setAttributeNames(customAttributes);
+
+            if (hasAsync) {
                 const passes: Function = () => {
-                    delete this.errors[name];
+                    this.invalidateErrors(data);
                     resolve(errors);
                 };
 
                 const fails: Function = () => {
-                    const errMessage: string = validate.errors.first(name);
-                    errors[name] = errMessage;
+                    errors = this.fillErrors(validator);
                     resolve(errors);
                 };
 
-                validate.checkAsync(passes, fails);
+                validator.checkAsync(passes, fails);
                 return;
             }
 
-            if (validate.fails()) {
-                const errMessage: string = validate.errors.first(name);
-                errors[name] = errMessage;
+            if (validator.fails()) {
+                errors = this.fillErrors(validator);
                 return resolve(errors);
             }
 
-            delete this.errors[name];
+            this.invalidateErrors(data);
             return resolve(errors);
+        });
+    }
+
+    /**
+     * Prepare error object to store the errors into the react state.
+     *
+     * @param validator
+     */
+    private fillErrors(validator): object {
+        const errors = {};
+        Object.keys(validator.errors.all()).forEach(field => {
+            errors[field] = validator.errors.first(field);
+        });
+        return errors;
+    }
+
+    /**
+     * Invalidate valid input field errors.
+     *
+     * @param data
+     */
+    private invalidateErrors(data): void {
+        Object.keys(data).forEach(fieldName => {
+            delete this.errors[fieldName];
         });
     }
 

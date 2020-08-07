@@ -2,7 +2,9 @@ const path = require('path');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
-  entry: './src/index.ts',
+  entry: {
+    bundle: './src/index.ts'
+  },
   module: {
     rules: [
       { test: /\.ts(x?)$/,
@@ -10,11 +12,14 @@ module.exports = {
       }
     ]
   },
+  externals : {
+    validatorjs: 'validatorjs'
+  },
   resolve: {
     extensions: [ '.tsx', '.ts', '.js', '.css' ]
   },
   output: {
-    filename: 'bundle.js',
+    filename: "[name].js",
     path: path.resolve(__dirname, 'dist'),
     libraryTarget: 'umd'
   },
