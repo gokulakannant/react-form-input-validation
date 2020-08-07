@@ -8,7 +8,7 @@ All notable changes to React Form Input Validation APIs will be documented in th
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [2.0.3] - 07/08/2020
+## [2.0.4] - 07/08/2020
 
 ### Fixed
 
