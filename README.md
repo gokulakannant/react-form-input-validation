@@ -17,6 +17,7 @@ A customized [validatorjs](https://www.npmjs.com/package/validatorjs) library to
 * Compatible with libraries like [Material UI](https://material-ui.com/), and etc.
 * Readable and declarative validation rules which is inspired by laravel framework.
 * Error messages with multilingual support.
+* Handy to manage multiple forms in same page.
 
 ## Installation
 
@@ -170,7 +171,7 @@ The input types button, submit, reset, hidden are exceptional from the above lis
 
 ## Versions
 
-Latest Version: 2.0.2. For more versions refer [VERSIONS.md](VERSIONS.md).
+Latest Version: 2.0.3. For more versions refer [VERSIONS.md](VERSIONS.md).
 
 ## Changelog
 

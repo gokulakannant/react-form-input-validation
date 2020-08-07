@@ -1,6 +1,6 @@
 {
   "name": "react-form-input-validation",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "A validator package to validate the react forms",
   "main": "./dist/bundle.js",
   "license": "GPLv3",
@@ -44,6 +44,6 @@
     "webpack-cli": "^3.3.9"
   },
   "dependencies": {
-    "validatorjs": "^3.17.1"
+    "validatorjs": "^3.18.1"
   }
 }

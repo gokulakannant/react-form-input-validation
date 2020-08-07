@@ -8,6 +8,17 @@ All notable changes to React Form Input Validation APIs will be documented in th
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2.0.3] - 07/08/2020
+
+### Fixed
+
+- Fixed Confirm password not working issue - [#19](https://github.com/gokulakannant/react-form-input-validation/issues/19)
+
+### Modified
+
+- Reduced the package size with webpack configurations.
+- Performance optimization
+
 ## [2.0.1] - 25/11/2019
 
 ### Fixed
