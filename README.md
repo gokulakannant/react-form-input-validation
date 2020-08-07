@@ -171,7 +171,7 @@ The input types button, submit, reset, hidden are exceptional from the above lis
 
 ## Versions
 
-Latest Version: 2.0.4. For more versions refer [VERSIONS.md](VERSIONS.md).
+Latest Version: 2.0.5. For more versions refer [VERSIONS.md](VERSIONS.md).
 
 ## Changelog
 

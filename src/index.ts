@@ -182,7 +182,8 @@ class ReactFormInputValidation extends BaseValidation {
                 rule[name] = this.rules[name];
 
                 if (!rule[name]) {
-                    console.error(`Rule is not defind for ${name}`);
+                    console.warn(`Rule is not defind for ${name}`);
+                    rule[name] = "";
                 }
 
                 if (name.endsWith("_confirmation")) {

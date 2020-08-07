@@ -4898,9 +4898,9 @@ react-dom@^16.13.1:
     prop-types "^15.6.2"
     scheduler "^0.19.1"
 
-react-form-input-validation@./react-form-input-validation-2.0.2.tgz:
-  version "2.0.2"
-  resolved "./react-form-input-validation-2.0.2.tgz#e25c3642f38c285f1d630dc76228f024fb75dd98"
+react-form-input-validation@./react-form-input-validation-2.0.4.tgz:
+  version "2.0.4"
+  resolved "./react-form-input-validation-2.0.4.tgz#c9c97f9ce7959008adf4a97b4f3df271355b29f3"
   dependencies:
     validatorjs "^3.18.1"
 
