@@ -9,6 +9,8 @@ class ValidationForm extends React.Component {
       fields: {
         customer_name: "",
         email_address: "",
+        password: "",
+        password_confirmation: "",
         phone_number: "",
         pickup_time: "",
         taxi: "",
@@ -23,6 +25,8 @@ class ValidationForm extends React.Component {
     this.form.useRules({
       customer_name: "required|username_available",
       email_address: "required|email",
+      password: "required|confirmed",
+      password_confirmation: "required|same:password",
       phone_number: "required|numeric|digits_between:10,12",
       pickup_time: "required|date",
       taxi: "required",
@@ -53,6 +57,7 @@ class ValidationForm extends React.Component {
   }
 
   render() {
+    console.log(this.state.errors)
     return (
         <div style={{maxWidth: "600px", margin: "0 auto"}}>
           <h3>React Form Input Validation</h3>
@@ -115,6 +120,42 @@ class ValidationForm extends React.Component {
               <label className="error">
                 {this.state.errors.email_address
                   ? this.state.errors.email_address
+                  : ""}
+              </label>
+            </p>
+
+            <p>
+              <label>
+                Password
+                <input
+                  type="text"
+                  name="password"
+                  onBlur={this.form.handleBlurEvent}
+                  onChange={this.form.handleChangeEvent}
+                  value={this.state.fields.password}
+                />
+              </label>
+              <label className="error">
+                {this.state.errors.password
+                  ? this.state.errors.password
+                  : ""}
+              </label>
+            </p>
+
+            <p>
+              <label>
+                Confirm Password
+                <input
+                  type="text"
+                  name="password_confirmation"
+                  onBlur={this.form.handleBlurEvent}
+                  onChange={this.form.handleChangeEvent}
+                  value={this.state.fields.password_confirmation}
+                />
+              </label>
+              <label className="error">
+                {this.state.errors.password_confirmation
+                  ? this.state.errors.password_confirmation
                   : ""}
               </label>
             </p>
@@ -216,7 +257,7 @@ class ValidationForm extends React.Component {
                   type="date"
                   name="pickup_time"
                   onChange={this.form.handleChangeEvent}
-                  onBlur={this.form.handleBlurEvent}
+                  // onBlur={this.form.handleBlurEvent}
                   value={this.state.fields.pickup_time}
                 />
               </label>

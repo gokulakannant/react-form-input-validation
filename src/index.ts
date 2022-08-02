@@ -1,6 +1,9 @@
-const Validator = require("validatorjs");
+// const Validator = require("validatorjs");
+import * as Validator from "validatorjs";
 import { IReactComponent, IOptions, IValidatorErrors, IDynamicKeyValues, ReactFormSubmitEventHandler,
     ReactFormInputValidation as BaseValidation, Lang } from "./specs/react-form-input-validator.spec";
+import { useFormInputValidation } from "./hooks/useFormInputValidation";
+import { getCheckboxValues, getRadioButtonValues, fillErrors } from "./utils/utils";
 
 class ReactFormInputValidation extends BaseValidation {
     private component: IReactComponent;
@@ -21,15 +24,15 @@ class ReactFormInputValidation extends BaseValidation {
         Validator.useLang(locale);
     }
 
-    static register(name: string, callbackFn: Function, errorMessage: string): void {
+    static register(name: string, callbackFn: Validator.RegisterCallback, errorMessage: string): void {
         Validator.register(name, callbackFn, errorMessage);
     }
 
-    static registerAsync(name: string, callbackFn: Function): void {
-        Validator.registerAsync(name, callbackFn);
+    static registerAsync(name: string, callbackFn: Validator.RegisterAsyncCallback, errorMessage: string): void {
+        Validator.registerAsync(name, callbackFn, errorMessage);
     }
 
-    static setMessages(langCode: Lang, values: object): void {
+    static setMessages(langCode: Lang, values: Validator.ErrorMessages): void {
         Validator.setMessages(langCode, values);
     }
 
@@ -37,14 +40,15 @@ class ReactFormInputValidation extends BaseValidation {
         return Validator.getMessages(langCode);
     }
 
-    static getDefaultLang(): Lang {
+    static getDefaultLang(): string {
         return Validator.getDefaultLang();
     }
 
-    static setAttributeFormatter(callbackFn: Function): void {
+    static setAttributeFormatter(callbackFn: Validator.AttributeFormatter): void {
         Validator.setAttributeFormatter(callbackFn);
     }
 
+    // @ts-ignore
     public set onformsubmit(callback: ReactFormSubmitEventHandler) {
         if (this._onformsubmit) {
             super.removeListener("formsubmit", this._onformsubmit);
@@ -76,8 +80,8 @@ class ReactFormInputValidation extends BaseValidation {
         const name: string = event.target.name;
         if (this.component && name) {
             const fields = Object.assign({}, this.component.state.fields);
-            fields[name] = (event.target.type === "checkbox") ? this.getCheckboxValues(event.target) :
-                            (event.target.type === "radio") ? this.getRadioButtonValues(event.target) :
+            fields[name] = (event.target.type === "checkbox") ? getCheckboxValues(event.target) :
+                            (event.target.type === "radio") ? getRadioButtonValues(event.target) :
                             event.target.value;
             this.component.setState({ fields: fields, isValidatorUpdate: true });
         }
@@ -85,7 +89,7 @@ class ReactFormInputValidation extends BaseValidation {
 
     public handleBlurEvent(event: React.FocusEvent<HTMLInputElement>) {
         const element: HTMLInputElement = event.target;
-        this.validate(element).then((inputErrors) => {
+        this.validate([element]).then((inputErrors) => {
             if (this.component && this.component.hasOwnProperty("state")) {
                 this.errors = Object.assign(this.errors, inputErrors);
                 this.component.setState({ errors: this.errors, isValidatorUpdate: true });
@@ -114,81 +118,30 @@ class ReactFormInputValidation extends BaseValidation {
             };
         }
 
-        const validatePromises: Array<Promise<any>> = [];
+        const elements = [];
 
         form.querySelectorAll("textarea,select,input:not([type='submit']):not([type='file']):not([data-ignore-validation])")
             .forEach((element) => {
-            validatePromises.push(this.validate(element));
+            elements.push(element);
         });
 
         return new Promise((resolve) => {
-            Promise.all(validatePromises)
-                    .then((results) => {
-                       results.forEach((eachResult) => {
-                        this.errors = Object.assign(this.errors, eachResult);
-                        this.component.setState({
-                            errors: this.errors,
-                            isValidatorUpdate: true
-                        });
-                       });
+            this.validate(elements)
+                .then(results => {
+                    this.errors = results;
+                    this.component.setState({
+                        errors: this.errors,
+                        isValidatorUpdate: true
+                    });
 
-                       if (Object.keys(this.component.state.errors)[0] &&
-                            form.querySelector(`[name="${Object.keys(this.component.state.errors)[0]}"]`)) {
-                            form.querySelector(`[name="${Object.keys(this.component.state.errors)[0]}"]`).focus();
-                        }
-
-                       resolve(Object.keys(this.component.state.errors).length === 0);
-                    })
-                    .catch(errors => console.log(errors));
+                    if (Object.keys(this.component.state.errors)[0] &&
+                        form.querySelector(`[name="${Object.keys(this.component.state.errors)[0]}"]`)) {
+                        form.querySelector(`[name="${Object.keys(this.component.state.errors)[0]}"]`).focus();
+                    }
+                    resolve(Object.keys(this.component.state.errors).length === 0);
+                })
+                .catch(errors => console.log(errors));
         });
-    }
-
-    /**
-     * Get the value from the radio button group
-     * @param element Radio button element
-     */
-    private getRadioButtonValues(element: HTMLInputElement): string | boolean {
-        const radios: any = document.getElementsByName(element.name);
-        const checkedRadioButton = [...radios].filter((val) => val.checked === true);
-        return (checkedRadioButton[0]) ? checkedRadioButton[0].value : "";
-    }
-
-    /**
-     * Get the checked values from the checkbox group and return the values as array
-     * @param element {@link HTMLInputElement}
-     */
-    private getCheckboxValues(element: HTMLInputElement): Array<any> {
-        const checkboxes: any = document.getElementsByName(element.name);
-        const checkedBoxes = [...checkboxes].filter((eachCheckBox) => eachCheckBox.checked === true);
-        const values = [];
-        checkedBoxes.forEach(eachCheckBox => values.push(eachCheckBox.value));
-        return values;
-    }
-
-    /**
-     * Parse the input element base on the element type get its value and return it.
-     *
-     * @param element HTMLInputElement or HTMLSelectElement
-     */
-    private getValueFromHtmlNode(element: HTMLInputElement | HTMLSelectElement): any {
-        switch (element.tagName) {
-            case "INPUT":
-                if (element.type === "radio") {
-                    return this.getRadioButtonValues(element as HTMLInputElement);
-                }
-
-                if (element.type === "checkbox") {
-                    return this.getCheckboxValues(element as HTMLInputElement);
-                }
-
-                return element.getAttribute("value");
-            case "SELECT":
-                return (<HTMLSelectElement> element).options[(<HTMLSelectElement> element).selectedIndex].value;
-            case "TEXTAREA":
-                return element.value;
-            default:
-                return element.getAttribute("value");
-        }
     }
 
     /**
@@ -196,53 +149,75 @@ class ReactFormInputValidation extends BaseValidation {
      *
      * @param element HTMLInputElement
      */
-    private validate(element: HTMLInputElement): Promise<IDynamicKeyValues> {
-        return new Promise((resolve, reject) => {
-            const errors = {};
-            const name = element.getAttribute("name");
-            const data = {
-                [name]: this.getValueFromHtmlNode(element)
-            };
-
+    private validate(elements: Array<HTMLInputElement>): Promise<IDynamicKeyValues> {
+        return new Promise((resolve) => {
+            let errors = <any> {};
+            const data = {};
             const rule = {};
-            rule[name] = this.rules[name];
+            const customAttributes = {};
+            let hasAsync: boolean = false;
 
-            if (!rule[name]) {
-                return resolve(errors);
-            }
+            elements.forEach(element => {
+                const name = element.getAttribute("name");
+                data[name] = this.component.state.fields[name];
 
-            const validate = new Validator(data, rule);
+                rule[name] = this.rules[name];
 
-            if (element.hasAttribute("data-attribute-name")) {
-                validate.setAttributeNames({
-                    [name]: element.getAttribute("data-attribute-name")
-                });
-            }
+                if (!rule[name]) {
+                    console.warn(`Rule is not defind for ${name}`);
+                    rule[name] = "";
+                }
 
-            if (element.hasAttribute("data-async")) {
+                if (name.endsWith("_confirmation")) {
+                    const original = name.slice(0, name.indexOf("_confirmation"));
+                    data[original] = this.component.state.fields[original];
+                }
+
+                if (element.hasAttribute("data-attribute-name")) {
+                    customAttributes[name] = element.getAttribute("data-attribute-name");
+                }
+
+                if (element.hasAttribute("data-async")) {
+                    hasAsync = true;
+                }
+            });
+
+            const validator = new Validator(data, rule);
+            validator.setAttributeNames(customAttributes);
+
+            if (hasAsync) {
                 const passes: Function = () => {
-                    delete this.errors[name];
+                    this.invalidateErrors(data);
                     resolve(errors);
                 };
 
                 const fails: Function = () => {
-                    const errMessage: string = validate.errors.first(name);
-                    errors[name] = errMessage;
+                    errors = fillErrors(validator);
                     resolve(errors);
                 };
 
-                validate.checkAsync(passes, fails);
+                validator.checkAsync(passes, fails);
                 return;
             }
 
-            if (validate.fails()) {
-                const errMessage: string = validate.errors.first(name);
-                errors[name] = errMessage;
+            if (validator.fails()) {
+                errors = fillErrors(validator);
                 return resolve(errors);
             }
 
-            delete this.errors[name];
+            this.invalidateErrors(data);
             return resolve(errors);
+        });
+    }
+
+    /**
+     * Invalidate valid input field errors.
+     *
+     * @param data
+     */
+    private invalidateErrors(data): void {
+        Object.keys(data).forEach(fieldName => {
+            delete this.errors[fieldName];
         });
     }
 
@@ -259,6 +234,7 @@ class ReactFormInputValidation extends BaseValidation {
 }
 
 export {
-    Lang
+    Lang,
+    useFormInputValidation
 };
 export default ReactFormInputValidation;

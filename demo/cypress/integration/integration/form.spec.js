@@ -1,17 +1,17 @@
 describe('The Home Page', function() {
     it('Successfull rendering', function() {
-      cy.visit('http://localhost:3000/')
+      cy.visit('http://localhost:8080/')
     })
 
     it('Check Submit Button', function() {
-        cy.visit('http://localhost:3000/')
+        cy.visit('http://localhost:8080/')
         cy.contains('Submit Booking').click()
       });
   });
 
 describe("Test blur events", () => {
     it('Successfull rendering', function() {
-        cy.visit('http://localhost:3000/')
+        cy.visit('http://localhost:8080/')
     })
 
     it("Customer Name blur (Text field)", () => {
@@ -52,7 +52,7 @@ describe("Test blur events", () => {
 
 describe("Test change event", () => {
     it('Successfull rendering', function() {
-        cy.visit('http://localhost:3000/')
+        cy.visit('http://localhost:8080/')
     });
 
     it("Customer Name change event (Text field)", () => {
@@ -100,7 +100,7 @@ describe("Test change event", () => {
 
 describe("Fill form fields", () => {
     it('Successfull rendering', function() {
-        cy.visit('http://localhost:3000/')
+        cy.visit('http://localhost:8080/')
     });
 
     it("Type customer name (Text field)", () => {
@@ -143,7 +143,7 @@ describe("Fill form fields", () => {
 
 describe("Test validation rules in form fields", () => {
     beforeEach("Render home page", () => {
-        cy.visit('http://localhost:3000/');
+        cy.visit('http://localhost:8080/');
     })
     describe("Customer name (required)", () => {
         it("Empty fields should display error message", () => {
