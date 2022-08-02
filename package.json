@@ -1,8 +1,9 @@
 {
   "name": "react-form-input-validation",
-  "version": "2.0.5",
+  "version": "2.1.0",
   "description": "A validator package to validate the react forms",
   "main": "./dist/bundle.js",
+  "types": "./dist/src/index.d.ts",
   "license": "GPLv3",
   "author": "gokulakannant <gokulakannanthangaraji@gmail.com> (https://gokulakannant.github.io)",
   "homepage": "https://gokulakannant.github.io/react-form-input-validation/index.html",
@@ -35,15 +36,21 @@
     "@types/node": "^12.11.7",
     "@types/react": "^16.9.11",
     "@types/validatorjs": "^3.15.0",
+    "babel-loader": "^8.2.5",
+    "react": ">=16.9.0",
+    "react-dom": ">=16.9.0",
     "ts-loader": "^6.2.1",
     "tslint": "^6.0.0-beta0",
-    "typedoc": "^0.15.0",
-    "typescript": "^3.6.4",
-    "uglifyjs-webpack-plugin": "^2.2.0",
+    "typedoc": "^0.23.10",
+    "typescript": "^4.6.4",
+    "uglifyjs-webpack-plugin": "^1.1.2",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.9"
   },
   "dependencies": {
-    "validatorjs": "^3.18.1"
+    "validatorjs": "^3.22.1"
+  },
+  "peerDependencies": {
+    "react": ">=16.9.0"
   }
 }

@@ -57,6 +57,7 @@ class ValidationForm extends React.Component {
   }
 
   render() {
+    console.log(this.state.errors)
     return (
         <div style={{maxWidth: "600px", margin: "0 auto"}}>
           <h3>React Form Input Validation</h3>

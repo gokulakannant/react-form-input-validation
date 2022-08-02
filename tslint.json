@@ -65,10 +65,8 @@
         "cyclomatic-complexity": true,
         "eofline": true,
         "max-classes-per-file": [true, 5, "exclude-class-expressions"],
-        "max-line-length": [true, 120],
         "align": [true, "parameters", "statements"],
         "import-spacing": true,
-        "interface-name": [true, "always-prefix"],
         "no-consecutive-blank-lines": true,
         "prefer-template": [true, "allow-single-concat"],
         "no-unnecessary-callback-wrapper": true

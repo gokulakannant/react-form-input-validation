@@ -13,7 +13,8 @@ module.exports = {
     ]
   },
   externals : {
-    validatorjs: 'validatorjs'
+    validatorjs: 'validatorjs',
+    react: 'react'
   },
   resolve: {
     extensions: [ '.tsx', '.ts', '.js', '.css' ]
