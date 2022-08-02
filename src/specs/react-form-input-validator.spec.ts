@@ -1,4 +1,8 @@
-import { Component } from "react";
+/**
+ * @module ReactFormInputValidation
+ */
+import React, { Component } from "react";
+import * as Validator from "validatorjs";
 /**
  * A dictionary object, that consists dynamic key value pairs.
  */
@@ -368,7 +372,7 @@ export abstract class ReactFormInputValidation extends EventTarget {
      * ```
      * @see Example in [Code Sandbox](https://codesandbox.io/s/react-form-input-validationregister-yobct)
      */
-    static register(name: string, callbackFn: Function, errorMessage: string): void { }
+    static register(name: string, callbackFn: Validator.RegisterCallback, errorMessage: string): void { }
 
     /**
      * Register an asynchronous rule which accepts a passes callback.
@@ -376,6 +380,8 @@ export abstract class ReactFormInputValidation extends EventTarget {
      *
      * @param name The name of the rule.
      * @param callbackFn
+     * @param errorMessage An optional string where you can specify a custom error message.
+     * :attribute inside errorMessage will be replaced with the attribute name.
      * @example
      * ```js
      *
@@ -389,16 +395,16 @@ export abstract class ReactFormInputValidation extends EventTarget {
      * ```html
      * <input
      *      type="text"
-     *      name="email"
+     *      name="customer_name"
      *      onChange={this.form.handleChangeEvent}
      *      onBlur={this.form.handleBlurEvent}
-     *      value={this.state.fields.email}
+     *      value={this.state.fields.customer_name}
      *      data-async
      * >
      * ```
      * @see Example in [Code Sandbox](https://codesandbox.io/s/react-form-input-validationregisterasync-hzp8b).
      */
-    static registerAsync(name: string, callbackFn: Function): void { }
+    static registerAsync(name: string, callbackFn: Validator.RegisterAsyncCallback, errorMessage: string): void { }
 
     /**
      * You can also add your own custom language by calling setMessages.
@@ -411,7 +417,7 @@ export abstract class ReactFormInputValidation extends EventTarget {
      * import ReactFormInputValidation, { Lang } from "react-form-input-validation";
      *
      * ReactFormInputValidation.setMessages(Lang.en, {
-     *  required: 'The :attribute field is required.'
+     *  required: 'The :attribute can't be empty.'
      * });
      * ```
      * @see Example in [Code Sandbox](https://codesandbox.io/s/react-form-input-validationattribute-formattors-bfomi).
@@ -441,7 +447,7 @@ export abstract class ReactFormInputValidation extends EventTarget {
      * ```
      * @see Example in [Code Sandbox](https://codesandbox.io/s/react-form-input-validationlocale-rhz6w).
      */
-    static getDefaultLang(): Lang { return _; }
+    static getDefaultLang(): string { return _; }
 
     /**
      * You can supply global custom attribute names in your app with the attributes property.
@@ -478,7 +484,7 @@ export abstract class ReactFormInputValidation extends EventTarget {
 
     /**
      * Set the validation rules for form fields.
-     * Find the available [rules](https://www.npmjs.com/package/validatorjs#available-rules) here.
+     * Find the available [rules](https://github.com/gokulakannant/react-form-input-validation/blob/master/Rules.md#available-rules) here.
      *
      * @param rules The rules to validate.
      * @example

@@ -1,6 +1,9 @@
-const Validator = require("validatorjs");
+// const Validator = require("validatorjs");
+import * as Validator from "validatorjs";
 import { IReactComponent, IOptions, IValidatorErrors, IDynamicKeyValues, ReactFormSubmitEventHandler,
     ReactFormInputValidation as BaseValidation, Lang } from "./specs/react-form-input-validator.spec";
+import { useFormInputValidation } from "./hooks/useFormInputValidation";
+import { getCheckboxValues, getRadioButtonValues, fillErrors } from "./utils/utils";
 
 class ReactFormInputValidation extends BaseValidation {
     private component: IReactComponent;
@@ -21,15 +24,15 @@ class ReactFormInputValidation extends BaseValidation {
         Validator.useLang(locale);
     }
 
-    static register(name: string, callbackFn: Function, errorMessage: string): void {
+    static register(name: string, callbackFn: Validator.RegisterCallback, errorMessage: string): void {
         Validator.register(name, callbackFn, errorMessage);
     }
 
-    static registerAsync(name: string, callbackFn: Function): void {
-        Validator.registerAsync(name, callbackFn);
+    static registerAsync(name: string, callbackFn: Validator.RegisterAsyncCallback, errorMessage: string): void {
+        Validator.registerAsync(name, callbackFn, errorMessage);
     }
 
-    static setMessages(langCode: Lang, values: object): void {
+    static setMessages(langCode: Lang, values: Validator.ErrorMessages): void {
         Validator.setMessages(langCode, values);
     }
 
@@ -37,14 +40,15 @@ class ReactFormInputValidation extends BaseValidation {
         return Validator.getMessages(langCode);
     }
 
-    static getDefaultLang(): Lang {
+    static getDefaultLang(): string {
         return Validator.getDefaultLang();
     }
 
-    static setAttributeFormatter(callbackFn: Function): void {
+    static setAttributeFormatter(callbackFn: Validator.AttributeFormatter): void {
         Validator.setAttributeFormatter(callbackFn);
     }
 
+    // @ts-ignore
     public set onformsubmit(callback: ReactFormSubmitEventHandler) {
         if (this._onformsubmit) {
             super.removeListener("formsubmit", this._onformsubmit);
@@ -76,8 +80,8 @@ class ReactFormInputValidation extends BaseValidation {
         const name: string = event.target.name;
         if (this.component && name) {
             const fields = Object.assign({}, this.component.state.fields);
-            fields[name] = (event.target.type === "checkbox") ? this.getCheckboxValues(event.target) :
-                            (event.target.type === "radio") ? this.getRadioButtonValues(event.target) :
+            fields[name] = (event.target.type === "checkbox") ? getCheckboxValues(event.target) :
+                            (event.target.type === "radio") ? getRadioButtonValues(event.target) :
                             event.target.value;
             this.component.setState({ fields: fields, isValidatorUpdate: true });
         }
@@ -141,28 +145,6 @@ class ReactFormInputValidation extends BaseValidation {
     }
 
     /**
-     * Get the value from the radio button group
-     * @param element Radio button element
-     */
-    private getRadioButtonValues(element: HTMLInputElement): string | boolean {
-        const radios: any = document.getElementsByName(element.name);
-        const checkedRadioButton = [...radios].filter((val) => val.checked === true);
-        return (checkedRadioButton[0]) ? checkedRadioButton[0].value : "";
-    }
-
-    /**
-     * Get the checked values from the checkbox group and return the values as array
-     * @param element {@link HTMLInputElement}
-     */
-    private getCheckboxValues(element: HTMLInputElement): Array<any> {
-        const checkboxes: any = document.getElementsByName(element.name);
-        const checkedBoxes = [...checkboxes].filter((eachCheckBox) => eachCheckBox.checked === true);
-        const values = [];
-        checkedBoxes.forEach(eachCheckBox => values.push(eachCheckBox.value));
-        return values;
-    }
-
-    /**
      * Validate the single input element and return validation errors;
      *
      * @param element HTMLInputElement
@@ -210,7 +192,7 @@ class ReactFormInputValidation extends BaseValidation {
                 };
 
                 const fails: Function = () => {
-                    errors = this.fillErrors(validator);
+                    errors = fillErrors(validator);
                     resolve(errors);
                 };
 
@@ -219,26 +201,13 @@ class ReactFormInputValidation extends BaseValidation {
             }
 
             if (validator.fails()) {
-                errors = this.fillErrors(validator);
+                errors = fillErrors(validator);
                 return resolve(errors);
             }
 
             this.invalidateErrors(data);
             return resolve(errors);
         });
-    }
-
-    /**
-     * Prepare error object to store the errors into the react state.
-     *
-     * @param validator
-     */
-    private fillErrors(validator): object {
-        const errors = {};
-        Object.keys(validator.errors.all()).forEach(field => {
-            errors[field] = validator.errors.first(field);
-        });
-        return errors;
     }
 
     /**
@@ -265,6 +234,7 @@ class ReactFormInputValidation extends BaseValidation {
 }
 
 export {
-    Lang
+    Lang,
+    useFormInputValidation
 };
 export default ReactFormInputValidation;

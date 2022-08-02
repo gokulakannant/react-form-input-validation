@@ -16,7 +16,7 @@
   "dependencies": {
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-form-input-validation": "./react-form-input-validation-2.0.4.tgz"
+    "react-form-input-validation": "./react-form-input-validation-2.1.0.tgz"
   },
   "devDependencies": {
     "@babel/core": "^7.11.1",
